@@ -1,6 +1,7 @@
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import validates
+from datetime import datetime
 
 from config import db
 
@@ -10,7 +11,7 @@ class Item(db.Model, SerializerMixin):
     __tablename__ = "items"
 
     id = db.Column(db.Integer, primary_key=True)
-    item_name= db.Column(db.String, nullable=False)
+    item_name= db.Column(db.String, nullable=False, unique=True)
     category = db.Column(db.String, nullable=False)
     stock_quantity = db.Column(db.Integer, nullable=False)
     reorder_quantity = db.Column(db.Integer, nullable=False)
@@ -18,6 +19,28 @@ class Item(db.Model, SerializerMixin):
     restock_orders = db.relationship('RestockOrder', back_populates='item', cascade='all, delete-orphan')
 
     serialize_rules = ('-restock_orders.item',)
+
+    @validates('item_name')
+    def validates_item_name(self, key, name):
+        pass
+
+    @validates('category')
+    def validates_category(self, key, category):
+        valid_categories = ['Meat', 'Produce', 'Dairy', 'Beverage', 'Spice', 'Equipment']
+        if category in valid_categories:
+            return category
+        else:
+            raise ValueError('Must be a valid category')
+        
+
+
+    @validates('stock_quantity')
+    def validates_stock_quantity(self, key, quantity):
+        pass
+
+    @validates('reorder_quantity')
+    def validates_reorder_quantity(self, key, quantity):
+        pass
 
     def __repr__(self):
         return f'<Item {self.id}: {self.item_name}>'
@@ -36,6 +59,14 @@ class Supplier(db.Model, SerializerMixin):
 
     serialize_rules = ('-restock_orders.supplier',)
 
+    @validates('name')
+    def validates_name(self, key, name):
+        pass
+
+    @validates('email')
+    def validates_email(self, key, email):
+        pass
+
     @validates('phone_num')
     def validate_phone(self, key, phone_number):
         # Ensure the phone number is in the format 12-length format
@@ -47,6 +78,10 @@ class Supplier(db.Model, SerializerMixin):
             raise ValueError('Phone number must contain digits in the format XXX-XXX-XXXX')
         
         return phone_number
+    
+    @validates('address')
+    def validates_address(self, key, address):
+        pass
     
     def __repr__(self):
         return f'<Supplier {self.id}: {self.name}>'
@@ -83,10 +118,19 @@ class RestockOrder(db.Model, SerializerMixin):
             return quantity
         else:
             raise ValueError('Must submit quantity above 0')
-    
+        
+    @validates(order_date)
+    def validate_order_date(self, key, date):
+        try:
+            datetime.strptime(date, '%Y-%m-%d')
+        except ValueError as e:
+            return {'error': str(e)}
 
 
     def __repr__(self):
         return f'<Supplier {self.id}: {self.order_date}>'
 
     
+
+    # WORK ON VALIDATIONS FOR ALL MODELS
+    # THEN WORK ON ALL CRUD OPERATIONS ON APP.PY        

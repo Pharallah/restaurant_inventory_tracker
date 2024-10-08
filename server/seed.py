@@ -2,7 +2,7 @@
 
 # Standard library imports
 from datetime import datetime, timedelta
-from random import randint, choice as rc
+from random import randint, choice as rc, sample
 
 # Remote library imports
 from faker import Faker
@@ -32,17 +32,20 @@ def create_items():
     'Beef Steak', 'Pork Belly', 'Chicken Thighs', 'Duck Breast', 'Goat Meat',
     'Veal Cutlets', 'Bison', 'Venison', 'Ham', 'Salami', 'Bacon', 'Sausage'
 ]
-    # food_category = ['Meat', 'Produce', 'Dairy', 'Beverage', 'Equipment']
-    for _ in range(10):
-        item = Item(
-            item_name=rc(meat_names),
-            category='Meat',
-            stock_quantity=randint(0, 10),
-            reorder_quantity=randint(2, 3)
-        )
-        inventory_items.append(item)
+    sample_size = len(meat_names)  
+    unique_choices = sample(meat_names, sample_size)
+
+    for item in unique_choices:
+        new_item = Item(
+                item_name=item,
+                category='Meat',
+                stock_quantity=randint(0, 10),
+                reorder_quantity=randint(2, 3)
+            )
+        inventory_items.append(new_item)
 
     return inventory_items
+            
 
 def create_suppliers():
     suppliers = []
@@ -67,7 +70,7 @@ def create_orders(items, suppliers):
     for _ in range(10):
         order = RestockOrder(
             order_status=rc(status_list),
-            order_quantity=randint(0, 10),
+            order_quantity=randint(1, 10),
             order_date=random_past_date(),
             item_id=rc([item.id for item in items]),
             supplier_id=rc([supplier.id for supplier in suppliers])

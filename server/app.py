@@ -140,7 +140,7 @@ class RestockOrders(Resource):
     
 
 api.add_resource(Items, '/items', endpoint='/items')
-api.add_resource(ItemById, '/items/<int:id>')
+# api.add_resource(ItemById, '/items/<int:id>')
 api.add_resource(RestockOrders, '/restock_orders', endpoint='/restock_orders')
 
 
