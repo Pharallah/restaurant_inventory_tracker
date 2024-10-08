@@ -15,6 +15,8 @@ class Item(db.Model, SerializerMixin):
     stock_quantity = db.Column(db.Integer, nullable=False)
     reorder_quantity = db.Column(db.Integer, nullable=False)
 
+    restock_orders = db.relationship('RestockOrder', back_populates='item')
+
 
 class Supplier(db.Model, SerializerMixin):
     __tablename__ = 'suppliers'
@@ -24,6 +26,8 @@ class Supplier(db.Model, SerializerMixin):
     email = db.Column(db.String, nullable=False)
     phone_num = db.Column(db.String, nullable=False, unique=True)
     address = db.Column(db.String, nullable=False)
+
+    restock_orders = db.relationship('RestockOrder', back_populates='supplier')
 
     @validates('phone_num')
     def validate_phone(self, key, phone_number):
@@ -48,6 +52,9 @@ class RestockOrder(db.Model, SerializerMixin):
 
     supplier_id = db.Column(db.Integer, db.ForeignKey('suppliers.id'))
     item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
+
+    item = db.relationship('Item', back_populates='restock_orders')
+    supplier = db.relationship('Supplier', back_populates='restock_orders')
 
     # REMINDER:
     # UNABLE TO INITIALIZE DB WITH MODELS. 

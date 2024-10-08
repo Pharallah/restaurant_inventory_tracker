@@ -61,7 +61,7 @@ def create_suppliers():
     
     return suppliers
 
-def create_orders():
+def create_orders(items, suppliers):
     orders = []
     status_list = ['Pending', 'Completed', 'Cancelled']
     for _ in range(10):
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         db.session.commit()
 
         print("Seeding Orders...")
-        orders = create_orders()
+        orders = create_orders(items, suppliers)
         db.session.add_all(orders)
         db.session.commit()
 
