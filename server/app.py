@@ -63,8 +63,23 @@ class Items(Resource):
                 return item_dict, 200
             except Exception as e:
                 return {'errors': 'Item not found'}, 400
+            
+class RestockOrders(Resource):
+    def get(self):
+        restock_orders = [order.to_dict(rules=('-item', '-supplier',)) for order in RestockOrder.query.all()]
+
+        if restock_orders:
+            response = make_response(
+                restock_orders, 200
+            )
+            return response
+        else:
+            return {'error': 'Unexpected Server Error'}, 500
+
+
 
 api.add_resource(Items, '/items', endpoint='/items')
+api.add_resource(RestockOrders, '/restock_orders', endpoint='/restock_orders')
 
 
 if __name__ == '__main__':
