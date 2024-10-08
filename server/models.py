@@ -96,7 +96,13 @@ class Supplier(db.Model, SerializerMixin):
     
     @validates('address')
     def validates_address(self, key, address):
-        pass
+        if not address:
+            raise ValueError('Address cannot be empty')
+
+        if len(address) < 5 or len(address) > 250:
+            raise ValueError('Address must be between 5 and 250 characters')
+
+        return address
     
     def __repr__(self):
         return f'<Supplier {self.id}: {self.name}>'
