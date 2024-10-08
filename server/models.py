@@ -27,7 +27,7 @@ class Item(db.Model, SerializerMixin):
             raise ValueError('Must have name')
         if not isinstance(name, str):
             raise ValueError('Item name must be a valid string')
-        if len(name) >= 2:
+        if len(name) <= 2:
             raise ValueError('Item name must be at least 2 characters long')
         return name
 
@@ -138,7 +138,7 @@ class RestockOrder(db.Model, SerializerMixin):
         if quantity > 0:
             return quantity
         else:
-            raise ValueError('Must submit quantity above 0')
+            raise ValueError('Order quantity must be above 0')
         
     @validates(order_date)
     def validate_order_date(self, key, date):

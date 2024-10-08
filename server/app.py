@@ -65,28 +65,48 @@ class Items(Resource):
             except Exception as e:
                 return {'errors': 'Item not found'}, 400
             
-# class ItemById(Resource):
-#     def patch(self, id):
-#         item = Item.query.filter(Item.id == id).first()
+class ItemById(Resource):
+    def patch(self, id):
+        item = Item.query.filter(Item.id == id).first()
 
-#         if item:
-#             json = request.get_json()
+        if item:
+            json = request.get_json()
 
-#             errors = []
+            errors = []
 
-#             if not json.get('item_name'):
-#                 errors.append('validation errors')
+            if not json.get('item_name'):
+                errors.append({'error': 'Must be a valid item name'})
 
+            if not json.get('category'):
+                errors.append({'error': 'Must be a valid category'})
+            
+            if not json.get('stock_quantity'):
+                errors.append({'error': 'Must be a valid stock quantity'})
+
+            if not json.get('reorder_quantity'):
+                errors.append({'error': 'Must be a valid reorder quantity'})
+
+            if errors:
+                return {'errors': errors}
+            
+            item.item_name = json['item_name']
+            item.category = json['category']
+            item.stock_quantity = json['stock_quantity']
+            item.reorder_quantity = json['reorder_quantity']
+
+            db.session.commit()
+
+            return item.to_dict(rules=('-restock_orders',)), 202
     
     def delete(self, id):
-        order = RestockOrder.query.filter(RestockOrder.id == id).first()
+        item = Item.query.filter(Item.id == id).first()
 
-        if order:
-            db.session.delete(order)
+        if item:
+            db.session.delete(item)
             db.session.commit()
-            return {'message': 'Restock Order successfully deleted'}, 204
+            return {'message': 'Item successfully deleted'}, 204
         else:
-            return {'error': 'Restock Order not found'}, 404
+            return {'error': 'Item not found'}, 404
             
 class RestockOrders(Resource):
     def get(self):
@@ -140,7 +160,7 @@ class RestockOrders(Resource):
     
 
 api.add_resource(Items, '/items', endpoint='/items')
-# api.add_resource(ItemById, '/items/<int:id>')
+api.add_resource(ItemById, '/items/<int:id>')
 api.add_resource(RestockOrders, '/restock_orders', endpoint='/restock_orders')
 
 
