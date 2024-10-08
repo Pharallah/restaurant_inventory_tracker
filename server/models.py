@@ -77,6 +77,12 @@ class RestockOrder(db.Model, SerializerMixin):
         else:
             raise ValueError('Must be a valid status')
         
+    @validates('order_quantity')
+    def validate_order_quantity(self, key, quantity):
+        if quantity > 0:
+            return quantity
+        else:
+            raise ValueError('Must submit quantity above 0')
     
 
 
