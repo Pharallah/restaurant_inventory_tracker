@@ -22,7 +22,13 @@ class Item(db.Model, SerializerMixin):
 
     @validates('item_name')
     def validates_item_name(self, key, name):
-        pass
+        if not name:
+            raise ValueError('Must have name')
+        if not isinstance(name, str):
+            raise ValueError('Item name must be a valid string')
+        if len(name) >= 2:
+            raise ValueError('Item name must be at least 2 characters long')
+        return name
 
     @validates('category')
     def validates_category(self, key, category):
