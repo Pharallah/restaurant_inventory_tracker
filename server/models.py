@@ -39,7 +39,7 @@ class Item(db.Model, SerializerMixin):
             raise ValueError('Must be a valid category')
 
     @validates('stock_quantity', 'reorder_quantity')
-    def validates_stock_quantity(self, key, quantity):
+    def validates_item_quantities(self, key, quantity):
         if quantity is None:
             raise ValueError(f'{key} cannot be None')
 
@@ -50,10 +50,6 @@ class Item(db.Model, SerializerMixin):
             raise ValueError('Reorder quantity must be greater than 0')
 
         return quantity
-
-    @validates('reorder_quantity')
-    def validates_reorder_quantity(self, key, quantity):
-        pass
 
     def __repr__(self):
         return f'<Item {self.id}: {self.item_name}>'
@@ -74,7 +70,10 @@ class Supplier(db.Model, SerializerMixin):
 
     @validates('name')
     def validates_name(self, key, name):
-        pass
+        if name and 2 <= len(name) <= 20:
+            return name
+        else:
+            raise ValueError('Supplier Name must be between 2 and 20 characters long')
 
     @validates('email')
     def validates_email(self, key, email):
