@@ -37,12 +37,19 @@ class Item(db.Model, SerializerMixin):
             return category
         else:
             raise ValueError('Must be a valid category')
-        
 
-
-    @validates('stock_quantity')
+    @validates('stock_quantity', 'reorder_quantity')
     def validates_stock_quantity(self, key, quantity):
-        pass
+        if quantity is None:
+            raise ValueError(f'{key} cannot be None')
+
+        if key == 'stock_quantity' and quantity <= 0:
+            raise ValueError('Stock quantity must be greater than 0')
+
+        if key == 'reorder_quantity' and quantity <= 0:
+            raise ValueError('Reorder quantity must be greater than 0')
+
+        return quantity
 
     @validates('reorder_quantity')
     def validates_reorder_quantity(self, key, quantity):
