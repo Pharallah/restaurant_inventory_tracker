@@ -2,6 +2,7 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import validates
 from datetime import datetime
+from validate_email_address import validate_email
 
 from config import db
 
@@ -77,7 +78,9 @@ class Supplier(db.Model, SerializerMixin):
 
     @validates('email')
     def validates_email(self, key, email):
-        pass
+        if not validate_email(email):
+            raise ValueError('Must be a valid email address.')
+        return email
 
     @validates('phone_num')
     def validate_phone(self, key, phone_number):
