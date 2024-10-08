@@ -65,6 +65,29 @@ class Items(Resource):
             except Exception as e:
                 return {'errors': 'Item not found'}, 400
             
+# class ItemById(Resource):
+#     def patch(self, id):
+#         item = Item.query.filter(Item.id == id).first()
+
+#         if item:
+#             json = request.get_json()
+
+#             errors = []
+
+#             if not json.get('item_name'):
+#                 errors.append('validation errors')
+
+    
+    def delete(self, id):
+        order = RestockOrder.query.filter(RestockOrder.id == id).first()
+
+        if order:
+            db.session.delete(order)
+            db.session.commit()
+            return {'message': 'Restock Order successfully deleted'}, 204
+        else:
+            return {'error': 'Restock Order not found'}, 404
+            
 class RestockOrders(Resource):
     def get(self):
         restock_orders = [order.to_dict(rules=('-item', '-supplier',)) for order in RestockOrder.query.all()]
@@ -114,10 +137,10 @@ class RestockOrders(Resource):
                 return order_dict, 200
             except Exception as e:
                 return {'errors': 'Restock Order not found'}, 400
-
-
+    
 
 api.add_resource(Items, '/items', endpoint='/items')
+api.add_resource(ItemById, '/items/<int:id>')
 api.add_resource(RestockOrders, '/restock_orders', endpoint='/restock_orders')
 
 

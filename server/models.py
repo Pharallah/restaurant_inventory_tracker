@@ -68,6 +68,18 @@ class RestockOrder(db.Model, SerializerMixin):
 
     serialize_rules = ('-item.restock_orders', '-supplier.restock_orders',)
 
+    @validates('order_status')
+    def validate_order_status(self, key, status):
+        valid_status = ['Pending', 'Completed', 'Cancelled']
+
+        if status in valid_status:
+            return status
+        else:
+            raise ValueError('Must be a valid status')
+        
+    
+
+
     def __repr__(self):
         return f'<Supplier {self.id}: {self.order_date}>'
 
