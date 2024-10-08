@@ -15,7 +15,12 @@ class Item(db.Model, SerializerMixin):
     stock_quantity = db.Column(db.Integer, nullable=False)
     reorder_quantity = db.Column(db.Integer, nullable=False)
 
-    restock_orders = db.relationship('RestockOrder', back_populates='item')
+    restock_orders = db.relationship('RestockOrder', back_populates='item', cascade='all, delete-orphan')
+
+    serialize_rules = ('-restock_orders.item',)
+
+    def __repr__(self):
+        return f'<Item {self.id}: {self.item_name}>'
 
 
 class Supplier(db.Model, SerializerMixin):
@@ -27,7 +32,9 @@ class Supplier(db.Model, SerializerMixin):
     phone_num = db.Column(db.String, nullable=False, unique=True)
     address = db.Column(db.String, nullable=False)
 
-    restock_orders = db.relationship('RestockOrder', back_populates='supplier')
+    restock_orders = db.relationship('RestockOrder', back_populates='supplier', cascade='all, delete-orphan')
+
+    serialize_rules = ('-restock_orders.supplier',)
 
     @validates('phone_num')
     def validate_phone(self, key, phone_number):
@@ -40,10 +47,13 @@ class Supplier(db.Model, SerializerMixin):
             raise ValueError('Phone number must contain digits in the format XXX-XXX-XXXX')
         
         return phone_number
+    
+    def __repr__(self):
+        return f'<Supplier {self.id}: {self.name}>'
 
 
 class RestockOrder(db.Model, SerializerMixin):
-    __tablename__ = 'orders'
+    __tablename__ = 'restock_orders'
 
     id = db.Column(db.Integer, primary_key=True)
     order_status = db.Column(db.String, nullable=False)
@@ -56,6 +66,9 @@ class RestockOrder(db.Model, SerializerMixin):
     item = db.relationship('Item', back_populates='restock_orders')
     supplier = db.relationship('Supplier', back_populates='restock_orders')
 
-    # REMINDER:
-    # UNABLE TO INITIALIZE DB WITH MODELS. 
-    # MIGHT BE DUE TO IMPORTS NOT BEING ABLE TO RESOLVE???
+    serialize_rules = ('-item.restock_orders', '-supplier.restock_orders',)
+
+    def __repr__(self):
+        return f'<Supplier {self.id}: {self.order_date}>'
+
+    
