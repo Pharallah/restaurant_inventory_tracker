@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Standard library imports
+from datetime import datetime
 
 # Remote library imports
 from flask import request, make_response
@@ -32,7 +33,7 @@ class Items(Resource):
         
     def post(self):
         json = request.get_json()
-
+        
         try:
             new_item = Item(
             item_name=json['item_name'],
@@ -75,6 +76,44 @@ class RestockOrders(Resource):
             return response
         else:
             return {'error': 'Unexpected Server Error'}, 500
+        
+
+    def post(self):
+        json = request.get_json()
+        today = datetime.now().date()
+
+        try:
+            new_order = RestockOrder(
+            supplier_id=json['supplier_id'],
+            item_id=json['item_id'],
+            order_status='Pending',
+            order_quantity=json['order_quantity'],
+            order_date=today
+        )
+            db.session.add(new_order)
+            db.session.commit()
+
+        except ValueError as e:
+            return {'errors': str(e)}, 400
+        
+        except Exception as e:
+            return {'errors': 'Failed to submit order to database', 'message': str(e)}, 500
+        
+        order_in_db = RestockOrder.query.filter(
+            RestockOrder.supplier_id == json['supplier_id'],
+            RestockOrder.item_id == json['item_id'],
+            RestockOrder.order_status == 'Pending',
+            RestockOrder.order_quantity == json['order_quantity'],
+            RestockOrder.order_date == today
+        ).first()
+
+        order_dict = order_in_db.to_dict(rules=('-item', '-supplier',))
+
+        if order_dict:
+            try:
+                return order_dict, 200
+            except Exception as e:
+                return {'errors': 'Restock Order not found'}, 400
 
 
 
