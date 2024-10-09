@@ -53,7 +53,7 @@ class Item(db.Model, SerializerMixin):
         return quantity
 
     def __repr__(self):
-        return f'<Item {self.id}: {self.item_name}>'
+        return f'<Item ID: {self.id}, Item Name: {self.item_name}>'
 
 
 class Supplier(db.Model, SerializerMixin):
@@ -105,7 +105,7 @@ class Supplier(db.Model, SerializerMixin):
         return address
     
     def __repr__(self):
-        return f'<Supplier {self.id}: {self.name}>'
+        return f'<Supplier ID: {self.id}, Name: {self.name}>'
 
 
 class RestockOrder(db.Model, SerializerMixin):
@@ -149,9 +149,5 @@ class RestockOrder(db.Model, SerializerMixin):
 
 
     def __repr__(self):
-        return f'<Supplier {self.id}: {self.order_date}>'
-
+        return f'<RestockOrder ID:{self.id}, Order Date: {self.order_date}>'
     
-
-    # WORK ON VALIDATIONS FOR ALL MODELS
-    # THEN WORK ON ALL CRUD OPERATIONS ON APP.PY        
