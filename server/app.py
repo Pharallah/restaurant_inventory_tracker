@@ -158,12 +158,31 @@ class RestockOrders(Resource):
             except Exception as e:
                 return {'errors': 'Restock Order not found'}, 400
     
+class Suppliers(Resource):
+    def get(self): 
+        suppliers = [supplier.to_dict(rules=('-restock_orders',)) for supplier in Supplier.query.all()]
+        
+        if suppliers:
+            response = make_response(
+                suppliers, 200
+            )
+            return response
+        else:
+            return {'error': 'Unexpected Server Error'}, 500
 
-api.add_resource(Items, '/items', endpoint='/items')
+    def post(self):
+        pass
+
+
+api.add_resource(Items, '/items')
 api.add_resource(ItemById, '/items/<int:id>')
-api.add_resource(RestockOrders, '/restock_orders', endpoint='/restock_orders')
+api.add_resource(RestockOrders, '/restock_orders')
+api.add_resource(Suppliers, '/suppliers')
 
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
 
+
+
+# Do we always have to use make_response() prior to returning our data or can we just use to_dict() and return that?

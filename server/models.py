@@ -44,11 +44,11 @@ class Item(db.Model, SerializerMixin):
         if quantity is None:
             raise ValueError(f'{key} cannot be None')
 
-        if key == 'stock_quantity' and quantity <= 0:
-            raise ValueError('Stock quantity must be greater than 0')
+        if key == 'stock_quantity' and quantity < 0:
+            raise ValueError('Stock quantity must be 0 or higher')
 
-        if key == 'reorder_quantity' and quantity <= 0:
-            raise ValueError('Reorder quantity must be greater than 0')
+        if key == 'reorder_quantity' and quantity < 0:
+            raise ValueError('Reorder quantity must be 0 or higher')
 
         return quantity
 
@@ -71,7 +71,7 @@ class Supplier(db.Model, SerializerMixin):
 
     @validates('name')
     def validates_name(self, key, name):
-        if name and 2 <= len(name) <= 20:
+        if name and 2 < len(name) <= 20:
             return name
         else:
             raise ValueError('Supplier Name must be between 2 and 20 characters long')
