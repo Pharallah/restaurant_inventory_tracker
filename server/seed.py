@@ -16,12 +16,10 @@ fake = Faker()
 fake.add_provider(FoodProvider)
 
 def random_past_date():
-    # Get the current date
     today = datetime.now().date()
-    # Generate a random number of days in the past (e.g., up to 1000 days ago)
-    days_in_past = randint(1, 90)
+    random_days_in_past = randint(1, 90)
     # Subtract that number of days from today
-    random_date = today - timedelta(days=days_in_past)
+    random_date = today - timedelta(days=random_days_in_past)
 
     return random_date
 
@@ -46,11 +44,14 @@ def create_items():
 
     return inventory_items
             
+def generate_company():
+            company_name = fake.company()
+            return company_name[:20]
 
 def create_suppliers():
     suppliers = []
     for _ in range(3):
-        company_name = fake.company()
+        company_name = generate_company()
         email_domain = ''.join(e for e in company_name if e.isalnum() or e == ' ').replace(' ', '-').lower()
         email = f'info@{email_domain}.com'
         

@@ -71,10 +71,10 @@ class Supplier(db.Model, SerializerMixin):
 
     @validates('name')
     def validates_name(self, key, name):
-        if name and 2 < len(name) <= 20:
+        if name and 1 <= len(name) <= 20:
             return name
         else:
-            raise ValueError('Supplier Name must be between 2 and 20 characters long')
+            raise ValueError('Supplier Name must be between 1 and 20 characters long')
 
     @validates('email')
     def validates_email(self, key, email):
@@ -124,6 +124,23 @@ class RestockOrder(db.Model, SerializerMixin):
 
     serialize_rules = ('-item.restock_orders', '-supplier.restock_orders',)
 
+    @validates('item_id', 'supplier_id')
+    def validates_foreign_keys(self, key, id):
+        if id is None:
+            raise ValueError(f'{key} cannot be None')
+        
+        if key == 'item_id':
+            item_in_db = Item.query.filter(Item.id == id).first()
+            if not item_in_db:
+                raise ValueError(f'No item by that ID in database')
+        
+        if key == 'supplier_id':
+            supplier_in_db = Supplier.query.filter(Supplier.id == id).first()
+            if not supplier_in_db:
+                raise ValueError(f'No supplier by that ID in database')
+            
+        return id
+
     @validates('order_status')
     def validate_order_status(self, key, status):
         valid_status = ['Pending', 'Completed', 'Cancelled']
@@ -143,7 +160,7 @@ class RestockOrder(db.Model, SerializerMixin):
     @validates(order_date)
     def validate_order_date(self, key, date):
         try:
-            datetime.strptime(date, '%Y-%m-%d')
+            datetime.strptime(date, '%m-%d-%Y')
         except ValueError as e:
             return {'error': str(e)}
 

@@ -61,7 +61,10 @@ class Items(Resource):
 
         if item_dict:
             try:
-                return item_dict, 200
+                response = make_response(
+                    item_dict, 200
+                )
+                return response
             except Exception as e:
                 return {'errors': 'Item not found'}, 400
             
@@ -96,7 +99,13 @@ class ItemById(Resource):
 
             db.session.commit()
 
-            return item.to_dict(rules=('-restock_orders',)), 202
+            item_dict = item.to_dict(rules=('-restock_orders',))
+
+            response = make_response(
+                item_dict, 202
+            )
+
+            return response
     
     def delete(self, id):
         item = Item.query.filter(Item.id == id).first()
@@ -140,7 +149,7 @@ class RestockOrders(Resource):
             return {'errors': str(e)}, 400
         
         except Exception as e:
-            return {'errors': 'Failed to submit order to database', 'message': str(e)}, 500
+            return {'errors': 'Failed to submit restock order to database', 'message': str(e)}, 500
         
         order_in_db = RestockOrder.query.filter(
             RestockOrder.supplier_id == json['supplier_id'],
@@ -154,7 +163,10 @@ class RestockOrders(Resource):
 
         if order_dict:
             try:
-                return order_dict, 200
+                response = make_response(
+                    order_dict, 200
+                )
+                return response
             except Exception as e:
                 return {'errors': 'Restock Order not found'}, 400
     
@@ -171,7 +183,42 @@ class Suppliers(Resource):
             return {'error': 'Unexpected Server Error'}, 500
 
     def post(self):
-        pass
+        json = request.get_json()
+
+        try:
+            new_supplier = Supplier(
+                name=json['name'],
+                email=json['email'],
+                phone_num=json['phone_num'],
+                address=json['address']
+            )
+            
+            db.session.add(new_supplier)
+            db.session.commit()
+
+        except ValueError as e:
+            return {'error': str(e)}, 400
+        
+        except Exception as e:
+            return {'errors': 'Failed to add supplier to database', 'message': str(e)}, 500
+        
+        supplier_in_db = Supplier.query.filter(
+            Supplier.name == json['name'],
+            Supplier.email == json['email'],
+            Supplier.phone_num == json['phone_num'],
+            Supplier.address == json['address']
+        ).first()
+
+        supplier_dict = supplier_in_db.to_dict(rules=('-restock_orders',))
+
+        if supplier_in_db:
+            try:
+                response = make_response(
+                    supplier_dict, 200
+                )
+                return response
+            except Exception as e:
+                return {'error': 'Supplier not found in database'}, 400
 
 
 api.add_resource(Items, '/items')
