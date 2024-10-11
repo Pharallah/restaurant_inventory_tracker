@@ -4,7 +4,7 @@
 from datetime import datetime
 
 # Remote library imports
-from flask import request, make_response
+from flask import request, make_response, abort
 from flask_restful import Resource
 
 # Local imports
@@ -69,6 +69,15 @@ class Items(Resource):
                 return {'errors': 'Item not found'}, 400
             
 class ItemById(Resource):
+
+    def get(self, id):
+        item = Item.query.filter(Item.id == id).first()
+
+        if not item:
+            abort(404, "Item not found")
+        
+        return item.to_dict(rules=('-restock_orders',)), 200
+
     def patch(self, id):
         item = Item.query.filter(Item.id == id).first()
 
@@ -76,19 +85,14 @@ class ItemById(Resource):
             json = request.get_json()
 
             errors = []
-
             if not json.get('item_name'):
                 errors.append({'error': 'Must be a valid item name'})
-
             if not json.get('category'):
                 errors.append({'error': 'Must be a valid category'})
-            
             if not json.get('stock_quantity'):
                 errors.append({'error': 'Must be a valid stock quantity'})
-
             if not json.get('reorder_quantity'):
                 errors.append({'error': 'Must be a valid reorder quantity'})
-
             if errors:
                 return {'errors': errors}
             
@@ -233,3 +237,7 @@ if __name__ == '__main__':
 
 
 # Do we always have to use make_response() prior to returning our data or can we just use to_dict() and return that?
+
+# Do i still need to run these commands if I already have app.run() within my if __name__ == '__main__':?
+    # export FLASK_APP=app.py
+    # export FLASK_RUN_PORT=5555
