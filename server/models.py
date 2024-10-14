@@ -29,26 +29,31 @@ class Item(db.Model, SerializerMixin):
             raise ValueError('Item name must be a valid string')
         if len(name) <= 2:
             raise ValueError('Item name must be at least 2 characters long')
-        return name
+        return name.title()
 
     @validates('category')
     def validates_category(self, key, category):
+        titled_category = category.title()
         valid_categories = ['Meat', 'Produce', 'Dairy', 'Beverage', 'Spice', 'Equipment']
-        if category in valid_categories:
-            return category
+        
+        if titled_category in valid_categories:
+            return titled_category
         else:
-            raise ValueError('Must be a valid category')
+            raise ValueError('Must be a valid category.')
 
     @validates('stock_quantity', 'reorder_quantity')
     def validates_item_quantities(self, key, quantity):
         if quantity is None:
-            raise ValueError(f'{key} cannot be None')
+            raise ValueError(f'{key} cannot be None.')
+        
+        if not isinstance(quantity, int):
+            raise ValueError(f'Quantity must be a valid integer.')
 
         if key == 'stock_quantity' and quantity < 0:
-            raise ValueError('Stock quantity must be 0 or higher')
+            raise ValueError('Stock quantity must be 0 or higher.')
 
         if key == 'reorder_quantity' and quantity < 0:
-            raise ValueError('Reorder quantity must be 0 or higher')
+            raise ValueError('Reorder quantity must be 0 or higher.')
 
         return quantity
 
@@ -74,7 +79,7 @@ class Supplier(db.Model, SerializerMixin):
         if name and 1 <= len(name) <= 20:
             return name
         else:
-            raise ValueError('Supplier Name must be between 1 and 20 characters long')
+            raise ValueError('Supplier Name must be between 1 and 20 characters long.')
 
     @validates('email')
     def validates_email(self, key, email):
@@ -86,21 +91,21 @@ class Supplier(db.Model, SerializerMixin):
     def validate_phone(self, key, phone_number):
         # Ensure the phone number is in the format 12-length format
         if len(phone_number) != 12 or phone_number[3] != '-' or phone_number[7] != '-':
-            raise ValueError('Phone number must be in the format XXX-XXX-XXXX')
+            raise ValueError('Phone number must be in the format XXX-XXX-XXXX.')
         
         # Ensure all other characters are digits
         if not (phone_number[:3].isdigit() and phone_number[4:7].isdigit() and phone_number[8:].isdigit()):
-            raise ValueError('Phone number must contain digits in the format XXX-XXX-XXXX')
+            raise ValueError('Phone number must contain digits in the format XXX-XXX-XXXX.')
         
         return phone_number
     
     @validates('address')
     def validates_address(self, key, address):
         if not address:
-            raise ValueError('Address cannot be empty')
+            raise ValueError('Address cannot be empty.')
 
         if len(address) < 5 or len(address) > 250:
-            raise ValueError('Address must be between 5 and 250 characters')
+            raise ValueError('Address must be between 5 and 250 characters.')
 
         return address
     
@@ -127,17 +132,17 @@ class RestockOrder(db.Model, SerializerMixin):
     @validates('item_id', 'supplier_id')
     def validates_foreign_keys(self, key, id):
         if id is None:
-            raise ValueError(f'{key} cannot be None')
+            raise ValueError(f'{key} cannot be None.')
         
         if key == 'item_id':
             item_in_db = Item.query.filter(Item.id == id).first()
             if not item_in_db:
-                raise ValueError(f'No item by that ID in database')
+                raise ValueError(f'No item by that ID in database.')
         
         if key == 'supplier_id':
             supplier_in_db = Supplier.query.filter(Supplier.id == id).first()
             if not supplier_in_db:
-                raise ValueError(f'No supplier by that ID in database')
+                raise ValueError(f'No supplier by that ID in database,')
             
         return id
 
@@ -148,14 +153,14 @@ class RestockOrder(db.Model, SerializerMixin):
         if status in valid_status:
             return status
         else:
-            raise ValueError('Must be a valid status')
+            raise ValueError('Must be a valid status.')
         
     @validates('order_quantity')
     def validate_order_quantity(self, key, quantity):
         if quantity > 0:
             return quantity
         else:
-            raise ValueError('Order quantity must be above 0')
+            raise ValueError('Order quantity must be above 0.')
         
     @validates(order_date)
     def validate_order_date(self, key, date):

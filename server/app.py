@@ -21,7 +21,7 @@ def index():
 
 class Items(Resource):
     def get(self):
-        items = [item.to_dict(rules=('-restock_orders',)) for item in Item.query.all()]
+        items = [item.to_dict() for item in Item.query.all()]
 
         if items:
             response = make_response(
@@ -51,8 +51,8 @@ class Items(Resource):
             return {'errors': 'Failed to add item to database', 'message': str(e)}, 500
         
         item_in_db = Item.query.filter(
-            Item.item_name == json['item_name'],
-            Item.category == json['category'],
+            Item.item_name == json['item_name'].title(),
+            Item.category == json['category'].title(),
             Item.stock_quantity == json['stock_quantity'],
             Item.reorder_quantity == json['reorder_quantity']
         ).first()
@@ -81,7 +81,10 @@ class ItemById(Resource):
     def patch(self, id):
         item = Item.query.filter(Item.id == id).first()
 
-        if item:
+        if not item:
+            abort(404, "Item not found")
+
+        elif item:
             json = request.get_json()
 
             errors = []
@@ -114,12 +117,13 @@ class ItemById(Resource):
     def delete(self, id):
         item = Item.query.filter(Item.id == id).first()
 
-        if item:
-            db.session.delete(item)
-            db.session.commit()
-            return {'message': 'Item successfully deleted'}, 204
-        else:
-            return {'error': 'Item not found'}, 404
+        if not item:
+            abort(404, "Item not found")
+  
+        db.session.delete(item)
+        db.session.commit()
+        return {}, 204
+      
             
 class RestockOrders(Resource):
     def get(self):
