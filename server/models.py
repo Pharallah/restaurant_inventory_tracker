@@ -1,7 +1,7 @@
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import validates
-from datetime import datetime
+from datetime import datetime, date
 from validate_email_address import validate_email
 
 from config import db
@@ -119,7 +119,7 @@ class RestockOrder(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     order_status = db.Column(db.String, nullable=False, default='Pending')
     order_quantity = db.Column(db.Integer, nullable=False)
-    order_date = db.Column(db.Date, nullable=False)
+    order_date = db.Column(db.Date, nullable=False, default=date.today)
 
     supplier_id = db.Column(db.Integer, db.ForeignKey('suppliers.id'))
     item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
