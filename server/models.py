@@ -117,7 +117,7 @@ class RestockOrder(db.Model, SerializerMixin):
     __tablename__ = 'restock_orders'
 
     id = db.Column(db.Integer, primary_key=True)
-    order_status = db.Column(db.String, nullable=False)
+    order_status = db.Column(db.String, nullable=False, default='Pending')
     order_quantity = db.Column(db.Integer, nullable=False)
     order_date = db.Column(db.Date, nullable=False)
 
