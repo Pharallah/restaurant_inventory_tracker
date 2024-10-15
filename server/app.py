@@ -6,11 +6,13 @@ from datetime import datetime
 # Remote library imports
 from flask import request, make_response, abort
 from flask_restful import Resource
+from flask_cors import CORS
 
 # Local imports
 from config import app, db, api
 # Add your model imports
 from models import Item, Supplier, RestockOrder
+
 
 
 # Views go here!
@@ -21,7 +23,7 @@ def index():
 
 class Items(Resource):
     def get(self):
-        items = [item.to_dict() for item in Item.query.all()]
+        items = [item.to_dict(rules=('-restock_orders',)) for item in Item.query.all()]
 
         if items:
             response = make_response(
