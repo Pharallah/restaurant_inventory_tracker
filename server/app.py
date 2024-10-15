@@ -233,7 +233,7 @@ class Suppliers(Resource):
 
 api.add_resource(Items, '/items')
 api.add_resource(ItemById, '/items/<int:id>')
-api.add_resource(RestockOrders, '/restock_orders')
+api.add_resource(RestockOrders, '/restockorders')
 api.add_resource(Suppliers, '/suppliers')
 
 
