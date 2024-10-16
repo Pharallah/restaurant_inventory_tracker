@@ -13,7 +13,7 @@ from config import app, db, api
 # Add your model imports
 from models import Item, Supplier, RestockOrder
 
-
+CORS(app)
 
 # Views go here!
 
@@ -35,17 +35,17 @@ class Items(Resource):
         
     def post(self):
         json = request.get_json()
-        
+        # print(json['itemName'])
+        # breakpoint()
         try:
             new_item = Item(
-            item_name=json['item_name'],
+            item_name=json['itemName'],
             category=json['category'],
-            stock_quantity=json['stock_quantity'],
-            reorder_quantity=json['reorder_quantity'],
+            stock_quantity=json['stockQuantity'],
+            reorder_quantity=json['reorderQuantity'],
         )
             db.session.add(new_item)
             db.session.commit()
-
         except ValueError as e:
             return {'errors': str(e)}, 400
         
@@ -53,10 +53,10 @@ class Items(Resource):
             return {'errors': 'Failed to add item to database', 'message': str(e)}, 500
         
         item_in_db = Item.query.filter(
-            Item.item_name == json['item_name'].title(),
+            Item.item_name == json['itemName'].title(),
             Item.category == json['category'].title(),
-            Item.stock_quantity == json['stock_quantity'],
-            Item.reorder_quantity == json['reorder_quantity']
+            Item.stock_quantity == json['stockQuantity'],
+            Item.reorder_quantity == json['reorderQuantity']
         ).first()
 
         item_dict = item_in_db.to_dict(rules=('-restock_orders',))
@@ -90,21 +90,21 @@ class ItemById(Resource):
             json = request.get_json()
 
             errors = []
-            if not json.get('item_name'):
+            if not json.get('itemName'):
                 errors.append({'error': 'Must be a valid item name'})
             if not json.get('category'):
                 errors.append({'error': 'Must be a valid category'})
-            if not json.get('stock_quantity'):
+            if not json.get('stockQuantity'):
                 errors.append({'error': 'Must be a valid stock quantity'})
-            if not json.get('reorder_quantity'):
+            if not json.get('reorderQuantity'):
                 errors.append({'error': 'Must be a valid reorder quantity'})
             if errors:
                 return {'errors': errors}
             
-            item.item_name = json['item_name']
+            item.item_name = json['itemName']
             item.category = json['category']
-            item.stock_quantity = json['stock_quantity']
-            item.reorder_quantity = json['reorder_quantity']
+            item.stock_quantity = json['stockQuantity']
+            item.reorder_quantity = json['reorderQuantity']
 
             db.session.commit()
 

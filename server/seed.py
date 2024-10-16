@@ -37,8 +37,8 @@ def create_items():
         new_item = Item(
                 item_name=item,
                 category='Meat',
-                stock_quantity=randint(0, 10),
-                reorder_quantity=randint(2, 3)
+                stock_quantity=randint(1, 50),
+                reorder_quantity=randint(1, 15)
             )
         inventory_items.append(new_item)
 

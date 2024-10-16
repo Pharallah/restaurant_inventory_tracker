@@ -33,29 +33,30 @@ class Item(db.Model, SerializerMixin):
 
     @validates('category')
     def validates_category(self, key, category):
-        titled_category = category.title()
         valid_categories = ['Meat', 'Produce', 'Dairy', 'Beverage', 'Spice', 'Equipment']
         
-        if titled_category in valid_categories:
-            return titled_category
+        if category in valid_categories:
+            return category
         else:
             raise ValueError('Must be a valid category.')
 
     @validates('stock_quantity', 'reorder_quantity')
     def validates_item_quantities(self, key, quantity):
-        if quantity is None:
+        int_quantity = int(quantity)
+        
+        if int_quantity is None:
             raise ValueError(f'{key} cannot be None.')
         
-        if not isinstance(quantity, int):
+        if not isinstance(int_quantity, int):
             raise ValueError(f'Quantity must be a valid integer.')
 
-        if key == 'stock_quantity' and quantity < 0:
-            raise ValueError('Stock quantity must be 0 or higher.')
+        if key == 'stock_quantity' and 0 < int_quantity and int_quantity > 50 :
+            raise ValueError('Stock quantity must be between 1 and 50.')
 
-        if key == 'reorder_quantity' and quantity < 0:
-            raise ValueError('Reorder quantity must be 0 or higher.')
+        if key == 'reorder_quantity' and 0 < int_quantity and int_quantity > 15:
+            raise ValueError('Reorder quantity must be between 1 and 15.')
 
-        return quantity
+        return int_quantity
 
     def __repr__(self):
         return f'<Item ID: {self.id}, Item Name: {self.item_name}>'
