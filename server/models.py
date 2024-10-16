@@ -6,13 +6,12 @@ from validate_email_address import validate_email
 
 from config import db
 
-# Models go here!
-
 class Item(db.Model, SerializerMixin):
     __tablename__ = "items"
 
     id = db.Column(db.Integer, primary_key=True)
     item_name= db.Column(db.String, nullable=False, unique=True)
+    # unique is not
     category = db.Column(db.String, nullable=False)
     stock_quantity = db.Column(db.Integer, nullable=False)
     reorder_quantity = db.Column(db.Integer, nullable=False)
