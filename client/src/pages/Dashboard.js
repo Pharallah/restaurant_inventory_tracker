@@ -45,7 +45,6 @@ useEffect(() => {
 
       {
         addItemForm && <ItemForm
-        items={items}
         addItemForm={addItemForm}
         setAddItemForm={setAddItemForm}
         />
