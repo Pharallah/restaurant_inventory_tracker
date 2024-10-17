@@ -70,116 +70,62 @@ class Items(Resource):
             except Exception as e:
                 return {'errors': 'Item not found'}, 400
             
-class ItemById(Resource):
+# class ItemById(Resource):
 
-    def get(self, id):
-        item = Item.query.filter(Item.id == id).first()
+#     def get(self, id):
+#         item = Item.query.filter(Item.id == id).first()
 
-        if not item:
-            abort(404, "Item not found")
+#         if not item:
+#             abort(404, "Item not found")
         
-        return item.to_dict(rules=('-restock_orders',)), 200
+#         return item.to_dict(rules=('-restock_orders',)), 200
 
-    def patch(self, id):
-        item = Item.query.filter(Item.id == id).first()
+#     def patch(self, id):
+#         item = Item.query.filter(Item.id == id).first()
 
-        if not item:
-            abort(404, "Item not found")
+#         if not item:
+#             abort(404, "Item not found")
 
-        elif item:
-            json = request.get_json()
+#         elif item:
+#             json = request.get_json()
 
-            errors = []
-            if not json.get('itemName'):
-                errors.append({'error': 'Must be a valid item name'})
-            if not json.get('category'):
-                errors.append({'error': 'Must be a valid category'})
-            if not json.get('stockQuantity'):
-                errors.append({'error': 'Must be a valid stock quantity'})
-            if not json.get('reorderQuantity'):
-                errors.append({'error': 'Must be a valid reorder quantity'})
-            if errors:
-                return {'errors': errors}
+#             errors = []
+#             if not json.get('itemName'):
+#                 errors.append({'error': 'Must be a valid item name'})
+#             if not json.get('category'):
+#                 errors.append({'error': 'Must be a valid category'})
+#             if not json.get('stockQuantity'):
+#                 errors.append({'error': 'Must be a valid stock quantity'})
+#             if not json.get('reorderQuantity'):
+#                 errors.append({'error': 'Must be a valid reorder quantity'})
+#             if errors:
+#                 return {'errors': errors}
             
-            item.item_name = json['itemName']
-            item.category = json['category']
-            item.stock_quantity = json['stockQuantity']
-            item.reorder_quantity = json['reorderQuantity']
+#             item.item_name = json['itemName']
+#             item.category = json['category']
+#             item.stock_quantity = json['stockQuantity']
+#             item.reorder_quantity = json['reorderQuantity']
 
-            db.session.commit()
+#             db.session.commit()
 
-            item_dict = item.to_dict(rules=('-restock_orders',))
+#             item_dict = item.to_dict(rules=('-restock_orders',))
 
-            response = make_response(
-                item_dict, 202
-            )
+#             response = make_response(
+#                 item_dict, 202
+#             )
 
-            return response
+#             return response
     
-    def delete(self, id):
-        item = Item.query.filter(Item.id == id).first()
+#     def delete(self, id):
+#         item = Item.query.filter(Item.id == id).first()
 
-        if not item:
-            abort(404, "Item not found")
+#         if not item:
+#             abort(404, "Item not found")
   
-        db.session.delete(item)
-        db.session.commit()
-        return {}, 204
+#         db.session.delete(item)
+#         db.session.commit()
+#         return {}, 204
       
-            
-class RestockOrders(Resource):
-    def get(self):
-        restock_orders = [order.to_dict(rules=('-item', '-supplier',)) for order in RestockOrder.query.all()]
-
-        if restock_orders:
-            response = make_response(
-                restock_orders, 200
-            )
-            return response
-        else:
-            return {'error': 'Unexpected Server Error'}, 500
-        
-
-    def post(self):
-        json = request.get_json()
-        today = datetime.now().date()
-
-        try:
-            new_order = RestockOrder(
-            supplier_id=json['supplier_id'],
-            item_id=json['item_id'],
-            order_status='Pending',
-            order_quantity=json['order_quantity'],
-            order_date=today
-        )
-            db.session.add(new_order)
-            db.session.commit()
-
-        except ValueError as e:
-            return {'errors': str(e)}, 400
-        
-        except Exception as e:
-            return {'errors': 'Failed to submit restock order to database', 'message': str(e)}, 500
-        
-        order_in_db = RestockOrder.query.filter(
-            RestockOrder.supplier_id == json['supplier_id'],
-            RestockOrder.item_id == json['item_id'],
-            RestockOrder.order_status == 'Pending',
-            RestockOrder.order_quantity == json['order_quantity'],
-            RestockOrder.order_date == today
-        ).first()
-
-        order_dict = order_in_db.to_dict(rules=('-item', '-supplier',))
-
-        if order_dict:
-            try:
-                response = make_response(
-                    order_dict, 200
-                )
-                return response
-            except Exception as e:
-                return {'errors': 'Restock Order not found'}, 400
-    
 class Suppliers(Resource):
     def get(self): 
         suppliers = [supplier.to_dict(rules=('-restock_orders',)) for supplier in Supplier.query.all()]
@@ -229,12 +175,121 @@ class Suppliers(Resource):
                 return response
             except Exception as e:
                 return {'error': 'Supplier not found in database'}, 400
+            
+class RestockOrders(Resource):
+    def get(self):
+        restock_orders = [order.to_dict(rules=('-item', '-supplier',)) for order in RestockOrder.query.all()]
+
+        if restock_orders:
+            response = make_response(
+                restock_orders, 200
+            )
+            return response
+        else:
+            return {'error': 'Unexpected Server Error'}, 500
+        
+
+    def post(self):
+        json = request.get_json()
+        today = datetime.now().date()
+
+        try:
+            new_order = RestockOrder(
+            supplier_id=json['supplierId'],
+            item_id=json['itemId'],
+            order_status='Pending',
+            order_quantity=json['orderQuantity'],
+            order_date=today
+        )
+            db.session.add(new_order)
+            db.session.commit()
+
+        except ValueError as e:
+            return {'errors': str(e)}, 400
+        
+        except Exception as e:
+            return {'errors': 'Failed to submit restock order to database', 'message': str(e)}, 500
+        
+        order_in_db = RestockOrder.query.filter(
+            RestockOrder.supplier_id == json['supplierId'],
+            RestockOrder.item_id == json['itemId'],
+            RestockOrder.order_status == 'Pending',
+            RestockOrder.order_quantity == json['orderQuantity'],
+            RestockOrder.order_date == today
+        ).first()
+
+        order_dict = order_in_db.to_dict(rules=('-item', '-supplier',))
+
+        if order_dict:
+            try:
+                response = make_response(
+                    order_dict, 200
+                )
+                return response
+            except Exception as e:
+                return {'errors': 'Restock Order not found'}, 400
+    
+class RestockOrderById(Resource):
+
+    def get(self, id):
+        order = RestockOrder.query.filter(RestockOrder.id == id).first()
+
+        if not order:
+            abort(404, "Order not found")
+        
+        return order.to_dict(rules=('-item', '-supplier')), 200
+
+    def patch(self, id):
+        order = RestockOrder.query.filter(RestockOrder.id == id).first()
+
+        if not order:
+            abort(404, "Order not found")
+
+        elif order:
+            json = request.get_json()
+
+            try:
+                order.order_status = json['order_status']
+
+                db.session.commit()
+            
+            except ValueError as e:
+                return {'errors': str(e)}, 400
+
+            except Exception as e:
+                return {'errors': str(e)}, 500
+            
+            order_in_db = RestockOrder.query.filter(
+                RestockOrder.id == order.id
+            ).first()
+
+            order_dict = order_in_db.to_dict(rules=('-item', '-supplier'))
+
+            response = make_response(
+                order_dict, 202
+            )
+
+            return response
+            
+    
+    def delete(self, id):
+        order = RestockOrder.query.filter(RestockOrder.id == id).first()
+
+        if not order:
+            abort(404, "Item not found")
+  
+        db.session.delete(order)
+        db.session.commit()
+
+        return {}, 204
 
 
 api.add_resource(Items, '/items')
-api.add_resource(ItemById, '/items/<int:id>')
-api.add_resource(RestockOrders, '/restockorders')
+# api.add_resource(ItemById, '/items/<int:id>')
 api.add_resource(Suppliers, '/suppliers')
+api.add_resource(RestockOrders, '/restockorders')
+api.add_resource(RestockOrderById, '/restockorders/<int:id>')
+
 
 
 if __name__ == '__main__':
