@@ -1,32 +1,21 @@
-import React, { useEffect, useState } from "react";
-// import { Switch, Route } from "react-router-dom";
+import React, { useState } from "react";
 import ItemContainer from "../components/ItemContainer";
-import NavBar from "../components/NavBar";
 import { ItemForm } from "../components/ItemForm";
-import { NavLink } from "react-router-dom";
 
+function Dashboard({ 
+  items, 
+  setItems 
+}) {
+  
+  const [addItemForm, setAddItemForm] = useState(false);
 
-function Dashboard() {
-
-const [items, setItems] = useState([])
-const [addItemForm, setAddItemForm] = useState(false);
-
-// GET REQUEST ALL ITEMS
-useEffect(() => {
-  console.log("FETCH!!!")
-  fetch("http://localhost:5555/items")
-    .then(res => res.json())
-    .then(list => {
-      setItems(list);
-      console.log(list)
-    })
-}, [addItemForm])
-
-// let itemForm = <ItemForm
-// items={items}
-// addItemForm={addItemForm}
-// setAddItemForm={setAddItemForm}
-// />
+  function onItemAddition(item) {
+    const updatedItems = [
+      ...items,
+      item
+    ]
+    setItems(updatedItems)
+  }
 
   return (
     <>
@@ -47,6 +36,7 @@ useEffect(() => {
         addItemForm && <ItemForm
         addItemForm={addItemForm}
         setAddItemForm={setAddItemForm}
+        onItemAddition={onItemAddition}
         />
       }
 

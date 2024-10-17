@@ -1,5 +1,5 @@
 import React from 'react'
-import Item from './Item'
+import Item from './ItemCard'
 
 function ItemContainer({
     items,
@@ -8,7 +8,7 @@ function ItemContainer({
 
 const itemsDisplay = items.map(item => {
     return <Item
-    key={item.id}
+    key={item.id} 
     currentItem={item}
     items={items}
     setItems={setItems}

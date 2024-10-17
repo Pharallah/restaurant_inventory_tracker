@@ -3,9 +3,9 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 export const ItemForm = ({
-  items,
   addItemForm,
-  setAddItemForm
+  setAddItemForm,
+  onItemAddition
 }) => {
 
   const categoryOptions = [
@@ -66,12 +66,13 @@ export const ItemForm = ({
         ),
       })
       .then(res => {
-        if (res.stats == 200) {
-          // Resets state to get rid of pop-up
-          console.log("POST SUCCESSFUL")
+        if (res.status === 200) {
           setAddItemForm(!addItemForm)
         }
+        return res.json()
       })
+      .then(newItem => onItemAddition(newItem))
+      
     }
   })
   
@@ -92,12 +93,6 @@ export const ItemForm = ({
         
         <label htmlFor="category">Category</label>
         <br />
-        {/* <input
-          id="category"
-          name="category"
-          onChange={formik.handleChange}
-          value={formik.values.category}
-        /> */}
           <select
             id="category"
             name="category"
@@ -136,31 +131,6 @@ export const ItemForm = ({
 
         <button type="submit">Submit</button>
       </form>
-      
-      {/* <table style={{ padding: "15px" }}>
-        <tbody>
-          <tr>
-            <th>item name</th>
-            <th>category</th>
-            <th>stock quantity</th>
-            <th>restock quantity</th>
-          </tr>
-          {items === "undefined" ? (
-            <p>Loading</p>
-          ) : (
-            items.map((item, i) => (
-              <>
-                <tr key={i}>
-                  <td>{items.itemName}</td>
-                  <td>{items.category}</td>
-                  <td>{items.stockQuantity}</td>
-                  <td>{items.reorderQuantity}</td>
-                </tr>
-              </>
-            ))
-          )}
-        </tbody>
-      </table> */}
     </div>
   )
 

@@ -1,4 +1,5 @@
-import Dashboard from "./pages/Dashboard";
+import App from "./pages/App";
+// import Dashboard from "./pages/Dashboard";
 import RestockingOrders from "./pages/RestockOrders";
 import SupplierList from "./pages/SupplierList";
 import About from "./pages/About";
@@ -7,7 +8,7 @@ import About from "./pages/About";
 const routes = [
     {
         path: "/",
-        element: <Dashboard/>,
+        element: <App/>,
         // errorElement: <ErrorPage />
     },
     {
