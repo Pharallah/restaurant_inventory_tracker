@@ -8,8 +8,8 @@ function RestockOrders() {
   const [orders, setOrders] = useState([])
   const { suppliers, setSuppliers } = useContext(Context)
 
-  console.log(orders)
-  console.log(suppliers)
+  // console.log(orders)
+  // console.log(suppliers)
   
   // RESTOCK ORDER GET ALL REQUEST
   useEffect(() => {
@@ -23,7 +23,6 @@ function RestockOrders() {
 
   function supplierMatcher(supplier_id) {
     const supplierMatch = suppliers.find(supplier => supplier.id === supplier_id);
-    console.log(supplierMatch)
     return supplierMatch.name
   }
 

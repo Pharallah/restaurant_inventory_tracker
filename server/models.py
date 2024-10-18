@@ -148,7 +148,7 @@ class RestockOrder(db.Model, SerializerMixin):
 
     @validates('order_status')
     def validate_order_status(self, key, status):
-        valid_status = ['Pending', 'Completed', 'Cancelled']
+        valid_status = ['Pending', 'Completed', 'Canceled']
 
         if status in valid_status:
             return status

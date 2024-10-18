@@ -67,7 +67,7 @@ def create_suppliers():
 
 def create_orders(items, suppliers):
     orders = []
-    status_list = ['Pending', 'Completed', 'Cancelled']
+    status_list = ['Pending', 'Completed', 'Canceled']
     for _ in range(10):
         order = RestockOrder(
             order_status=rc(status_list),
