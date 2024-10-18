@@ -24,6 +24,7 @@ function App() {
         </h1>
         <NavBar />
       </header>
+      
       <Outlet context={{
         items,
         setItems

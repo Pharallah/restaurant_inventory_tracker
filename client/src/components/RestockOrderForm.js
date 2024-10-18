@@ -73,11 +73,13 @@ export const RestockOrderForm = ({
       
     }
   })
-  
+
+
+
   
     return (
       <div>
-      <h4 className='addItemHeader'>Restock Order Form</h4>
+      <h4 className='addItemHeader'>Restock Order</h4>
       <form onSubmit={formik.handleSubmit} style={{ margin: "30px" }}>
 
         {/* SUPPLIER FIELD */}
