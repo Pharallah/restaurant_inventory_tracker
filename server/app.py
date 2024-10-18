@@ -23,7 +23,9 @@ def index():
 
 class Items(Resource):
     def get(self):
-        items = [item.to_dict(rules=('-restock_orders',)) for item in Item.query.all()]
+        items = [item.to_dict(
+            # rules=('-restock_orders',)
+            ) for item in Item.query.all()]
 
         if items:
             response = make_response(
@@ -175,6 +177,15 @@ class Suppliers(Resource):
                 return response
             except Exception as e:
                 return {'error': 'Supplier not found in database'}, 400
+
+class SupplierById(Resource):
+    def get(self, id):
+        supplier = Supplier.query.filter(Supplier.id == id)
+
+        if not supplier:
+            abort(404, "Item not found")
+        
+        return supplier.to_dict(rules=('-restock_orders',)), 200
             
 class RestockOrders(Resource):
     def get(self):
