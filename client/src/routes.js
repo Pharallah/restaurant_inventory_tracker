@@ -6,15 +6,15 @@ import ErrorPage from "./pages/ErrorPage";
 import RestockOrders from "./pages/RestockOrders";
 import SupplierCard from "./components/SupplierCard";
 import RestockOrderCard from "./components/RestockOrderCard";
-import { SupplierProvider } from "./context/SupplierContext";
+import { ContextProvider } from "./context/Context";
 
 const routes = [
     {
         path: "/",
         element: (
-        <SupplierProvider>
+        <ContextProvider>
             <App/>
-        </SupplierProvider>
+        </ContextProvider>
     ),
         errorElement: <ErrorPage />,
         children: [

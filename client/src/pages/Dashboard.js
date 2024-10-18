@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ItemContainer from "../components/ItemContainer";
 import { ItemForm } from "../components/ItemForm";
 import { Outlet, useOutletContext } from "react-router-dom";
-import { SupplierProvider } from "../context/SupplierContext";
+import { ContextProvider } from "../context/Context";
 
 function Dashboard() {
   const { items, setItems } = useOutletContext()
@@ -35,9 +35,9 @@ function Dashboard() {
       }
 
       <div className="itemContainer">
-        <SupplierProvider>
+        <ContextProvider>
           <ItemContainer />
-        </SupplierProvider>
+        </ContextProvider>
       </div>
       <Outlet context={items}/>
       

@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { 
+  // useState, 
+  // useEffect 
+} from 'react'
 import NavBar from '../components/NavBar'
-import { Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom';
+import { useContext } from 'react';
+import { Context } from '../context/Context';
 
 function App() {
-  const [items, setItems] = useState([])
+  const { suppliers, setSuppliers, items, setItems } = useContext(Context)
   
-  // Items GET ALL request
-  useEffect(() => {
-    console.log("ITEM GET FETCH")
-    fetch("/items")
-    .then(res => {
-      return res.json();
-    })
-    .then(list => setItems(list))
-    .catch(error => console.error("Error fetching items:", error));
-}, [])
-
   return (
     <main>
       <header>
@@ -24,11 +18,14 @@ function App() {
         </h1>
         <NavBar />
       </header>
-      
-      <Outlet context={{
-        items,
-        setItems
-      }}/>
+      <Outlet context={
+        {
+          suppliers,
+          setSuppliers,
+          items,
+          setItems
+        }
+      }/>
     </main>
   );
 };
