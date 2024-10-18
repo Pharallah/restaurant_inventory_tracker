@@ -61,8 +61,8 @@ export const ItemForm = ({
         },
         body: JSON.stringify(
           values,
-          // null,
-          // 2
+          null,
+          2
         ),
       })
       .then(res => {

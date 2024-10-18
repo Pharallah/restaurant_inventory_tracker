@@ -1,12 +1,15 @@
-import React, { useState, useEffect }from 'react'
+import React from 'react'
+import { createContext } from 'react'
+import { useState, useEffect } from 'react'
 
-const SupplierContext = React.createContext();
+const SupplierContext = createContext()
 
 function SupplierProvider({ children }) {
     const [suppliers, setSuppliers] = useState([])
-    
+
     // Suppliers GET ALL request
     useEffect(() => {
+        console.log("SUPPLIER GET FETCH")
         fetch("/suppliers")
         .then(res => {
             if (!res.ok) {
@@ -17,10 +20,13 @@ function SupplierProvider({ children }) {
         .then(supplier => setSuppliers(supplier))
         .catch(error => console.error("Error fetching suppliers:", error));
     }, [])
-  
-    return <SupplierContext.Provider 
-    value={{ suppliers, setSuppliers }}
-    >{children}</SupplierContext.Provider>;
-};
 
-export { SupplierContext, SupplierProvider };
+  
+    return <SupplierContext.Provider value={
+        {
+            suppliers, setSuppliers
+        }
+    }>{children}</SupplierContext.Provider>
+}
+
+export { SupplierContext, SupplierProvider }

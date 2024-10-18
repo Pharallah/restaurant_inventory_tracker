@@ -1,19 +1,16 @@
 import React from 'react'
-import Item from './ItemCard'
+import ItemCard from './ItemCard'
+import { useOutletContext } from 'react-router-dom'
 
-function ItemContainer({
-    items,
-    setItems
-}) {
-
-const itemsDisplay = items.map(item => {
-    return <Item
-    key={item.id} 
-    currentItem={item}
-    items={items}
-    setItems={setItems}
-    />
-})
+function ItemContainer() {
+    const { items } = useOutletContext()
+    
+    const itemsDisplay = items.map(item => {
+        return <ItemCard
+        key={item.id} 
+        item={item}
+        />
+    })
 
   return (
     <div className='itemsDisplay'>

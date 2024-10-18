@@ -6,15 +6,13 @@ function NavBar() {
     <nav>
         <NavLink to="/">Dashboard</NavLink>
         <br></br>
+        <NavLink to="/suppliers">Suppliers</NavLink>
+        <br></br>
+        <NavLink to="/restockorders">Restock Orders</NavLink>
+        <br></br>
         <NavLink to="/about">About</NavLink>
-        {/* <NavLink to="/restockorders">Restock Orders</NavLink>
-        <NavLink to="/suppliers">SupplierList</NavLink> */}
     </nav>
   )
 }
 
 export default NavBar
-
-
-
-// How to convert NavLinks to buttons instead???

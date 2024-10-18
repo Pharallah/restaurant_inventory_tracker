@@ -1,41 +1,37 @@
 import React, { useState, useEffect } from 'react'
-import { RestockingOrderForm } from './RestockingOrderForm'
-import { SupplierProvider } from '../context/SupplierContext'
+import { RestockOrderForm } from './RestockOrderForm'
+import { Outlet } from 'react-router-dom'
 
-function Item({
-    currentItem,
-    items,
-    setItems
-}) {
+function ItemCard({ item }) {
   const [showOrderButton, setShowOrderButton] = useState(false)
   const [showRestockForm, setShowRestockForm] = useState(false)
 
   // Opens/Closes the Order Button via quantity
   useEffect(() => {
-    if (currentItem.reorder_quantity >= currentItem.stock_quantity) {
+    if (item.reorder_quantity >= item.stock_quantity) {
       setShowOrderButton(true);
     } else {
       setShowOrderButton(false);
     }
-  }, [currentItem]);
+  }, [item]);
 
   return (
     <>
         <div>
-            {currentItem.item_name} | {currentItem.category} | Stock Quantity: {currentItem.stock_quantity} | {
+            {item.item_name} | {item.category} | Stock Quantity: {item.stock_quantity} | {
               showOrderButton &&
               <button onClick={
-                () => setShowRestockForm(!showRestockForm)
+                () => setShowRestockForm(true)
               }
                 >Order
               </button>
             }
             {showRestockForm && (
-              <SupplierProvider><RestockingOrderForm
-                items={items}
+                <RestockOrderForm
                 closeForm={() => setShowRestockForm(false)}
-              /></SupplierProvider>
+              />
             )}
+            <Outlet/>
         </div>
         
     </>
@@ -43,4 +39,4 @@ function Item({
   )
 }
 
-export default Item
+export default ItemCard

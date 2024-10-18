@@ -1,14 +1,14 @@
 import React, { useContext } from 'react'
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useOutletContext } from 'react-router-dom';
 import { SupplierContext } from '../context/SupplierContext';
 
-export const RestockingOrderForm = ({
-  items,
-  clogseForm
+export const RestockOrderForm = ({
+  closeForm
 }) => {
   const { suppliers } = useContext(SupplierContext)
-
+  const { items } = useOutletContext()
   // Defines options of the dropdown
   const supplierOptions = [
     { value: '', label: 'Select a Supplier' },
