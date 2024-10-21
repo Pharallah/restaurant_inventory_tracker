@@ -8,7 +8,8 @@ function RestockOrderCard({
   orderQuantity,
   orderDate,
   supplierName,
-  onUpdateOrder
+  onUpdateOrderStatus,
+  onDeleteOrder
 }) {
 
   // Displays the dropdown options to PATCH status
@@ -19,19 +20,18 @@ function RestockOrderCard({
     { value: "Completed", label: "Completed"},
   ];
 
-  const formSchema = yup.object().shape({
+  const statusFormSchema = yup.object().shape({
     orderStatus: yup
     .string()
     .required("Must choose a status.")
   });
     
-  const formik = useFormik({
+  const statusFormik = useFormik({
     initialValues: {
       orderStatus: orderStatus
     },
-    validationSchema: formSchema,
+    validationSchema: statusFormSchema,
     onSubmit: (values) => {
-      console.log(values)
       fetch(`/restockorders/${id}`, {
         method: "PATCH",
         headers: {
@@ -40,25 +40,39 @@ function RestockOrderCard({
         body: JSON.stringify(values)
       })
       .then(res => res.json())
-      .then(updatedOrder => onUpdateOrder(updatedOrder))
-    },
-    
+      .then(updatedOrder => onUpdateOrderStatus(updatedOrder))
+    }
   })
 
-  return (
+  function handleOrderDelete() {
+    fetch(`/restockorders/${id}`, {
+      method: "DELETE",
+    })
+    .then(res => {
+      if (res.ok) {
+      // If the server responds with 204 or no body, resolve with an empty object
+      return res.status === 204 ? { id } : res.json();
+    }
+    throw new Error('Failed to delete');
+    })
+    .then((deletedOrder) => {
+      onDeleteOrder(deletedOrder)
+    })
+  }
 
-    <div>
-      {orderDate} | {orderQuantity} | 
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <b>Date:</b> {orderDate} | <b>Quantity:</b> {orderQuantity} | <b>Status:</b>
       <form>
         <label htmlFor="orderStatus">
           <select
             id="orderStatus"
             name="orderStatus"
             onChange={(e) => {
-              formik.handleChange(e);
-              formik.handleSubmit();
+              statusFormik.handleChange(e);
+              statusFormik.handleSubmit();
             }}
-            value={formik.values.orderStatus}                   
+            value={statusFormik.values.orderStatus}                   
           >
             {statusOptions.map(option => (
               <option
@@ -71,6 +85,8 @@ function RestockOrderCard({
           </select>
         </label>
       </form>
+      |
+      <button onClick={handleOrderDelete}>Delete</button>
     </div>
   )
 }

@@ -18,8 +18,8 @@ function RestockOrders() {
     .then(orders => setOrders(orders))
   }, [])
 
-  function onUpdateOrder(updatedOrder) {
-    console.log(updatedOrder)
+
+  function onUpdateOrderStatus(updatedOrder) {
     const updatedOrders = orders.map(order => {
       if (order.id === updatedOrder.id) {
         return updatedOrder
@@ -38,6 +38,12 @@ function RestockOrders() {
   //   return supplierMatch.name
   // }
 
+  function onDeleteOrder(deletedOrder) {
+    const updatedOrders = orders.filter(order => order.id !== deletedOrder.id)
+
+    setOrders(updatedOrders)
+  }
+
   const orderDisplay = orders.map(order => {
     // const supplierName = supplierMatcher(order.supplier_id)
 
@@ -47,7 +53,8 @@ function RestockOrders() {
       orderStatus={order.order_status}
       orderQuantity={order.order_quantity}
       orderDate={order.order_date}
-      onUpdateOrder={onUpdateOrder}
+      onUpdateOrderStatus={onUpdateOrderStatus}
+      onDeleteOrder={onDeleteOrder}
       // supplierName={supplierName}
     />
   })
@@ -56,10 +63,11 @@ function RestockOrders() {
   return (
     <>
       <h1>Restock Orders</h1>
-      <div>
-        <h3>Order History</h3>
+      <h3>Order History</h3>
+      <div className='orderContainer'>
         {orderDisplay}
       </div>
+      <br></br>
       <button>Order</button>
     </>
   )
