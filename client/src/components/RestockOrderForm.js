@@ -54,7 +54,7 @@ export const RestockOrderForm = ({
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
-      fetch("http://localhost:5555/restockorders", {
+      fetch("/restockorders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +111,10 @@ export const RestockOrderForm = ({
             value={formik.values.itemId}
           >
             {itemOptions.map(option => (
-              <option key={option.value} value={option.value}>
+              <option 
+              key={option.value} 
+              value={option.value}
+              >
                 {option.label}
               </option>
             ))}

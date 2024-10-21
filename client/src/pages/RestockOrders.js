@@ -1,12 +1,12 @@
 import React, { useState, useEffect }from 'react'
 import RestockOrderCard from '../components/RestockOrderCard'
-import { useContext } from 'react';
-import { Context } from '../context/Context';
+// import { useContext } from 'react';
+// import { Context } from '../context/Context';
 
 
 function RestockOrders() {
   const [orders, setOrders] = useState([])
-  const { suppliers, setSuppliers } = useContext(Context)
+  // const { items, setItems, suppliers, setSuppliers } = useContext(Context)
 
   // console.log(orders)
   // console.log(suppliers)
@@ -18,23 +18,37 @@ function RestockOrders() {
     .then(orders => setOrders(orders))
   }, [])
 
-
-  // create a function we can call inside the orderDisplay to loop through suppliers and return the supplier name that matches the current order's id
-
-  function supplierMatcher(supplier_id) {
-    const supplierMatch = suppliers.find(supplier => supplier.id === supplier_id);
-    return supplierMatch.name
+  function onUpdateOrder(updatedOrder) {
+    console.log(updatedOrder)
+    const updatedOrders = orders.map(order => {
+      if (order.id === updatedOrder.id) {
+        return updatedOrder
+      }
+      else {
+        return order
+      }
+    })
+    setOrders(updatedOrders)
+    // const orderIds = orders.map(order => {
+    //   console.log(order.orderStatus)
+    // })
   }
+  // function supplierMatcher(supplier_id) {
+  //   const supplierMatch = suppliers.find(supplier => supplier.id === supplier_id);
+  //   return supplierMatch.name
+  // }
 
   const orderDisplay = orders.map(order => {
-    const supplierName = supplierMatcher(order.supplier_id)
+    // const supplierName = supplierMatcher(order.supplier_id)
 
     return <RestockOrderCard 
       key={order.id}
+      id={order.id}
       orderStatus={order.order_status}
       orderQuantity={order.order_quantity}
       orderDate={order.order_date}
-      supplierName={supplierName}
+      onUpdateOrder={onUpdateOrder}
+      // supplierName={supplierName}
     />
   })
   

@@ -8,12 +8,12 @@ function ContextProvider({ children }) {
     const [suppliers, setSuppliers] = useState([])
     const [items, setItems] = useState([])
 
-    console.log(items)
-    console.log(suppliers)
+    // console.log(items)
+    // console.log(suppliers)
 
     // Suppliers GET ALL request
     useEffect(() => {
-        console.log("SUPPLIER GET FETCH")
+        // console.log("SUPPLIER GET FETCH")
         fetch("/suppliers")
         .then(res => {
             if (!res.ok) {
@@ -27,7 +27,7 @@ function ContextProvider({ children }) {
   
   // Items GET ALL request
     useEffect(() => {
-        console.log("ITEM GET FETCH")
+        // console.log("ITEM GET FETCH")
         fetch("/items")
         .then(res => {
         return res.json();

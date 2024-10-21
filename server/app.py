@@ -260,7 +260,7 @@ class RestockOrderById(Resource):
             json = request.get_json()
 
             try:
-                order.order_status = json['order_status']
+                order.order_status = json['orderStatus']
 
                 db.session.commit()
             
