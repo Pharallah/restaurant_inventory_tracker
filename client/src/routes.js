@@ -1,7 +1,6 @@
 import App from "./pages/App";
 import Dashboard from "./pages/Dashboard";
 import SupplierList from "./pages/SupplierList";
-import About from "./pages/About";
 import ErrorPage from "./pages/ErrorPage";
 import RestockOrders from "./pages/RestockOrders";
 import SupplierCard from "./components/SupplierCard";
@@ -21,10 +20,6 @@ const routes = [
             {
                 path: "/",
                 element: <Dashboard />
-            },
-            {
-                path: "/about",
-                element: <About/>
             },
             {
                 path: "/restockorders",

@@ -8,8 +8,6 @@ import { useFormik } from 'formik';
 function SupplierList() {
 const { suppliers, setSuppliers } = useContext(Context)
 
-// const phoneRegExp = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
-
 const phoneRegExp = /^(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
 
 const supplierFormSchema = yup.object().shape({
@@ -24,7 +22,7 @@ const supplierFormSchema = yup.object().shape({
     .required("Email required"),
     phone_num: yup
     .string()
-    // .matches(phoneRegExp, 'Phone number is not valid')
+    .matches(phoneRegExp, 'Phone number is not valid')
     .required("Phone Number required"),
     address: yup
     .string()
@@ -73,25 +71,6 @@ const formik = useFormik({
             console.error("Invalid phone number format");
         }
     }
-    // onSubmit: (values) => {
-    //     console.log("SUPPLIER POST INITIATED")
-    //     console.log(values)
-    //     fetch("/suppliers", {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json"
-    //         },
-    //         body: JSON.stringify(values)
-    //     })
-    //     .then(res => res.json())
-    //     .then(newSupplier => {
-    //         const updatedSupplierList = [
-    //             ...suppliers,
-    //             newSupplier
-    //         ]
-    //         console.log(updatedSupplierList)
-    //     })
-    // }
 })
 
 // DISPLAY SUPPLIERS

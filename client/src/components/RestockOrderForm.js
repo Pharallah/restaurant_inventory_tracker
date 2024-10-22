@@ -44,7 +44,7 @@ export const RestockOrderForm = ({
       .positive()
       .integer()
       .required("Must enter an order quantity.")
-      .typeError("Please enter an Integer")
+      .typeError("Please enter an integer")
   });
   
   function parseQuantity(num) {
@@ -66,7 +66,6 @@ export const RestockOrderForm = ({
       
       if (parsedNum) {
         values.orderQuantity = parsedNum
-        console.log(values)
         fetch("/restockorders", {
           method: "POST",
           headers: {
@@ -85,7 +84,8 @@ export const RestockOrderForm = ({
           return res.json()
         })
         .then(newOrder => {})
-
+      } else {
+        throw new Error('Failed to submit order');
       }
 
       
