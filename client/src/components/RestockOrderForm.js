@@ -6,11 +6,11 @@ import { Context } from '../context/Context';
 
 
 export const RestockOrderForm = ({
-  closeForm
+  closeForm,
+  item
 }) => {
   const { suppliers } = useContext(Context)
-  console.log(suppliers)
-  const { items } = useOutletContext()
+  // const { items } = useOutletContext()
   // Defines options of the dropdown
   const supplierOptions = [
     { value: '', label: 'Select a Supplier' },
@@ -21,13 +21,13 @@ export const RestockOrderForm = ({
   ]
   
   // Defines options of the dropdown
-  const itemOptions = [
-    { value: '', label: 'Select an Item' },
-    ...items.map(item => ({
-      value: item.id,
-      label: item.item_name,
-    })),
-  ];
+  // const itemOptions = [
+  //   { value: '', label: 'Select an Item' },
+  //   ...items.map(item => ({
+  //     value: item.id,
+  //     label: item.item_name,
+  //   })),
+  // ];
 
   // Defines the form schema
   const formSchema = yup.object().shape({
@@ -35,8 +35,10 @@ export const RestockOrderForm = ({
       .string()
       .required("Must choose a supplier."),
     itemId: yup
-      .string()
-      .required("Must choose an item."),
+      .number()
+      .positive()
+      .integer()
+      .required("Must be a valid item"),
     orderQuantity: yup
       .number()
       .positive()
@@ -45,33 +47,48 @@ export const RestockOrderForm = ({
       .typeError("Please enter an Integer")
   });
   
+  function parseQuantity(num) {
+    const parsedNum = parseInt(num)
+    return parsedNum
+  }
+
+
   // useFormik + POST
   const formik = useFormik({
     initialValues: {
       supplierId: "",
-      itemId: "",
+      itemId: item.id,
       orderQuantity: "",
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
-      fetch("/restockorders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-          values,
-          null,
-          2
-        ),
-      })
-      .then(res => {
-        if (res.status === 200) {
-          closeForm()
-        }
-        return res.json()
-      })
-      .then(newOrder => {})
+      const parsedNum = parseQuantity(values.orderQuantity)
+      
+      if (parsedNum) {
+        values.orderQuantity = parsedNum
+        console.log(values)
+        fetch("/restockorders", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(
+            values,
+            null,
+            2
+          ),
+        })
+        .then(res => {
+          if (res.status === 200) {
+            closeForm()
+          }
+          return res.json()
+        })
+        .then(newOrder => {})
+
+      }
+
+      
       
     }
   })
@@ -99,7 +116,7 @@ export const RestockOrderForm = ({
           <p style={{ color: "red" }}> {formik.errors.supplierId}</p>
 
         {/* ITEM FIELD */}
-        <label htmlFor="itemId">Item</label>
+        {/* <label htmlFor="itemId">Item</label>
         <br />
           <select
             id="itemId"
@@ -116,7 +133,7 @@ export const RestockOrderForm = ({
               </option>
             ))}
           </select>
-        <p style={{ color: "red" }}> {formik.errors.itemId}</p>
+        <p style={{ color: "red" }}> {formik.errors.itemId}</p> */}
 
         {/* ORDER QUANTITY FIELD */}
         <label htmlFor="orderQuantity">Order Quantity</label>

@@ -30,6 +30,7 @@ function ItemCard({ item }) {
             {showRestockForm && (
                 <RestockOrderForm
                 closeForm={() => setShowRestockForm(false)}
+                item={item}
               />
             )}
             <Outlet/>
