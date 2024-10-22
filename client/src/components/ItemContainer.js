@@ -4,7 +4,6 @@ import { useOutletContext } from 'react-router-dom'
 
 function ItemContainer() {
     const { items } = useOutletContext()
-    console.log(items)
     
     const itemsDisplay = items.map(item => {
         return <ItemCard

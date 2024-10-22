@@ -1,6 +1,12 @@
 import React from 'react'
 
-function SupplierCard() {
+function SupplierCard({
+  id,
+  name,
+  email,
+  phoneNum,
+  address
+}) {
   
 
   // Use useParams() to dynamically access this component
@@ -9,7 +15,12 @@ function SupplierCard() {
   // const supplierId = params.id;
   
   return (
-    <div>SupplierCard</div>
+    <>
+      <div>
+      <b>Supplier:</b> {name} | <b>Email:</b> {email} | <b>Phone:</b> {phoneNum} | <b>Address:</b> {address}
+      </div>
+      <br></br>
+    </>
   )
 }
 

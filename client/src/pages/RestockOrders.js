@@ -67,8 +67,6 @@ function RestockOrders() {
       <div className='orderContainer'>
         {orderDisplay}
       </div>
-      <br></br>
-      <button>Order</button>
     </>
   )
 }

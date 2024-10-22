@@ -75,9 +75,6 @@ export const RestockOrderForm = ({
       
     }
   })
-
-
-
   
     return (
       <div>
@@ -131,7 +128,6 @@ export const RestockOrderForm = ({
           value={formik.values.orderQuantity}
         />
         <p style={{ color: "red" }}> {formik.errors.orderQuantity}</p>
-
 
         <button type="submit">Submit</button>
         <button onClick={closeForm}>Close</button>
