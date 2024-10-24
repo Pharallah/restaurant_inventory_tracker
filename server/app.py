@@ -72,61 +72,61 @@ class Items(Resource):
             except Exception as e:
                 return {'errors': 'Item not found'}, 400
             
-# class ItemById(Resource):
+class ItemById(Resource):
 
-#     def get(self, id):
-#         item = Item.query.filter(Item.id == id).first()
+    def get(self, id):
+        item = Item.query.filter(Item.id == id).first()
 
-#         if not item:
-#             abort(404, "Item not found")
+        if not item:
+            abort(404, "Item not found")
         
-#         return item.to_dict(rules=('-restock_orders',)), 200
+        return item.to_dict(rules=('-restock_orders',)), 200
 
-#     def patch(self, id):
-#         item = Item.query.filter(Item.id == id).first()
+    def patch(self, id):
+        item = Item.query.filter(Item.id == id).first()
 
-#         if not item:
-#             abort(404, "Item not found")
+        if not item:
+            abort(404, "Item not found")
 
-#         elif item:
-#             json = request.get_json()
+        elif item:
+            json = request.get_json()
 
-#             errors = []
-#             if not json.get('itemName'):
-#                 errors.append({'error': 'Must be a valid item name'})
-#             if not json.get('category'):
-#                 errors.append({'error': 'Must be a valid category'})
-#             if not json.get('stockQuantity'):
-#                 errors.append({'error': 'Must be a valid stock quantity'})
-#             if not json.get('reorderQuantity'):
-#                 errors.append({'error': 'Must be a valid reorder quantity'})
-#             if errors:
-#                 return {'errors': errors}
+            errors = []
+            if not json.get('itemName'):
+                errors.append({'error': 'Must be a valid item name'})
+            if not json.get('category'):
+                errors.append({'error': 'Must be a valid category'})
+            if not json.get('stockQuantity'):
+                errors.append({'error': 'Must be a valid stock quantity'})
+            if not json.get('reorderQuantity'):
+                errors.append({'error': 'Must be a valid reorder quantity'})
+            if errors:
+                return {'errors': errors}
             
-#             item.item_name = json['itemName']
-#             item.category = json['category']
-#             item.stock_quantity = json['stockQuantity']
-#             item.reorder_quantity = json['reorderQuantity']
+            item.item_name = json['itemName']
+            item.category = json['category']
+            item.stock_quantity = json['stockQuantity']
+            item.reorder_quantity = json['reorderQuantity']
 
-#             db.session.commit()
+            db.session.commit()
 
-#             item_dict = item.to_dict(rules=('-restock_orders',))
+            item_dict = item.to_dict(rules=('-restock_orders',))
 
-#             response = make_response(
-#                 item_dict, 202
-#             )
+            response = make_response(
+                item_dict, 202
+            )
 
-#             return response
+            return response
     
-#     def delete(self, id):
-#         item = Item.query.filter(Item.id == id).first()
+    def delete(self, id):
+        item = Item.query.filter(Item.id == id).first()
 
-#         if not item:
-#             abort(404, "Item not found")
+        if not item:
+            abort(404, "Item not found")
   
-#         db.session.delete(item)
-#         db.session.commit()
-#         return {}, 204
+        db.session.delete(item)
+        db.session.commit()
+        return {}, 204
       
 class Suppliers(Resource):
     def get(self): 
@@ -296,7 +296,7 @@ class RestockOrderById(Resource):
 
 
 api.add_resource(Items, '/items')
-# api.add_resource(ItemById, '/items/<int:id>')
+api.add_resource(ItemById, '/items/<int:id>')
 api.add_resource(Suppliers, '/suppliers')
 api.add_resource(RestockOrders, '/restockorders')
 api.add_resource(RestockOrderById, '/restockorders/<int:id>')

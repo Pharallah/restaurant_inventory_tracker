@@ -1,47 +1,29 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import ItemContainer from "../components/ItemContainer";
 import { ItemForm } from "../components/ItemForm";
-import { Outlet, useOutletContext } from "react-router-dom";
-import { ContextProvider } from "../context/Context";
+import { useOutletContext } from "react-router-dom";
+import { Context } from "../context/Context";
 
 function Dashboard() {
-  const { items, setItems } = useOutletContext()
+  
+  const {  
+    showItemForm, 
+    setShowItemForm,
+  } = useOutletContext()
 
-  const [addItemForm, setAddItemForm] = useState(false);
+  const { onItemAddition } = useContext(Context)
 
-  function onItemAddition(item) {
-    const updatedItems = [
-      ...items,
-      item
-    ]
-    setItems(updatedItems)
-  }
+
 
   return (
-    <>
-      <button 
-        className='addItemButton'
-        onClick={() => setAddItemForm(true)}
-      >
-        Add Item
-      </button>
-
-      {
-        addItemForm && <ItemForm
-        addItemForm={addItemForm}
-        setAddItemForm={setAddItemForm}
-        onItemAddition={onItemAddition}
-        />
-      }
-
+   <div className="flex-grow p-4">
+      {showItemForm && (
+        <ItemForm setShowItemForm={setShowItemForm} onItemAddition={onItemAddition} />
+      )}
       <div className="itemContainer">
-        <ContextProvider>
-          <ItemContainer />
-        </ContextProvider>
+        <ItemContainer />
       </div>
-      <Outlet context={items}/>
-      
-    </>
+    </div>
   )
 }
 

@@ -32,13 +32,23 @@ function ContextProvider({ children }) {
         .catch(error => console.error("Error fetching items:", error));
     }, [])
 
+    function onItemAddition(item) {
+        console.log("onItemAddition TRIGGERED")
+        console.log(item)
+        const updatedItems = [
+          ...items,
+          item
+        ]
+        setItems(updatedItems)
+      }
   
     return <Context.Provider value={
         {
             suppliers, 
             setSuppliers,
             items,
-            setItems
+            setItems,
+            onItemAddition
         }
     }>{children}</Context.Provider>
 }

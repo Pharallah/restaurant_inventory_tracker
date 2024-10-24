@@ -2,5 +2,8 @@
   "dependencies": {
     "formik": "^2.4.6",
     "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.14"
   }
 }

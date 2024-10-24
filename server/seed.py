@@ -26,9 +26,7 @@ def random_past_date():
 def create_items():
     inventory_items = []
     meat_names = [
-    'Chicken Breast', 'Ground Beef', 'Lamb Chops', 'Pork Ribs', 'Turkey Thighs',
-    'Beef Steak', 'Pork Belly', 'Chicken Thighs', 'Duck Breast', 'Goat Meat',
-    'Veal Cutlets', 'Bison', 'Venison', 'Ham', 'Salami', 'Bacon', 'Sausage'
+    'Chicken Breast', 'Ground Beef', 'Pork Ribs', 'Turkey Thighs', 'Pork Belly', 'Chicken Thighs', 'Ham', 'Bacon', 'Sausage'
 ]
     sample_size = len(meat_names)  
     unique_choices = sample(meat_names, sample_size)

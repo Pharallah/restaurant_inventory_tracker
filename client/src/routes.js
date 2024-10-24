@@ -24,14 +24,6 @@ const routes = [
             {
                 path: "/restockorders",
                 element: <RestockOrders/>,
-                children: [
-                    {
-                        path: "/restockorders/:id",
-                        element: <RestockOrderCard />,
-                        // Consider adding a unique error page for this
-                        errorElement: <ErrorPage />
-                    }
-                ]
             },
             {
                 path: "/suppliers",

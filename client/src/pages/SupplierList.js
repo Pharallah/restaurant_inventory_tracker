@@ -4,9 +4,20 @@ import { Context } from '../context/Context'
 import SupplierCard from '../components/SupplierCard'
 import * as yup from "yup";
 import { useFormik } from 'formik';
+import { useOutletContext } from "react-router-dom";
+import { ItemForm } from '../components/ItemForm';
+
 
 function SupplierList() {
 const { suppliers, setSuppliers } = useContext(Context)
+const { showItemForm, setShowItemForm } = useOutletContext()
+const { onItemAddition } = useContext(Context)
+const supplierImages = {
+    restaurantDepot: "https://www.restaurantdepot.com/images/default-source/default-album/logo.png?sfvrsn=17ca70b1_0",
+    gordonFoodService: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPTIr8TePA5fIv2ksOOY6aeQO3TxG0bvtdFA&s",
+    giantEagle: "https://cdn.worldvectorlogo.com/logos/giant-eagle.svg",
+    eatLocalOhio: "https://www.eatlocalohio.com/assets/images/shapes/elo-logo.png"
+}
 
 const phoneRegExp = /^(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
 
@@ -86,140 +97,108 @@ const displaySuppliers = suppliers.map(supplier =>
     
 )
     return (
-    <>
-        <h1>Supplier List</h1>
-        <div>
-            New Supplier Form
-            <br></br>
-            <form onSubmit={formik.handleSubmit} style={{ margin: "30px" }}>
-                
-                {/* NAME FIELD */}
-                <label htmlFor="name">Supplier Name</label>
-                <br />
-                <input
+        <>
+        {showItemForm && (
+          <ItemForm
+            setShowItemForm={setShowItemForm}
+            onItemAddition={onItemAddition}
+          />
+        )}
+        <div className="flex justify-center mt-10">
+          <form onSubmit={formik.handleSubmit} className="space-y-4 p-4 border border-gray-200 rounded lg:w-1/3 md:w-1/2 w-full">
+            <h2 className="text-xl font-bold mb-4 text-center">Supplier Form</h2>
+      
+            {/* NAME FIELD */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">Supplier Name</label>
+              <input
                 id="name"
                 name="name"
+                type="text"
                 placeholder="Supplier Name"
                 onChange={formik.handleChange}
                 value={formik.values.name}
-                />
-                <p style={{ color: "red" }}> {formik.errors.name}</p>
-
-                {/* EMAIL FIELD */}
-                <label htmlFor="email">Email Address</label>
-                <br />
-                <input
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+              <p className="text-red-500 text-xs mt-1">{formik.errors.name}</p>
+            </div>
+      
+            {/* EMAIL FIELD */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+              <input
                 id="email"
                 name="email"
+                type="email"
                 placeholder="example@example.com"
                 onChange={formik.handleChange}
                 value={formik.values.email}
-                />
-                <p style={{ color: "red" }}> {formik.errors.email}</p>
-
-                {/* PHONE NUM FIELD */}
-                <label htmlFor="phone_num">Phone Number</label>
-                <br />
-                <input
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+              <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
+            </div>
+      
+            {/* PHONE NUM FIELD */}
+            <div>
+              <label htmlFor="phone_num" className="block text-sm font-medium text-gray-700">Phone Number</label>
+              <input
                 id="phone_num"
                 name="phone_num"
-                placeholder='Ex: 123-456-7890'
+                type="text"
+                placeholder="Ex: 123-456-7890"
                 onChange={formik.handleChange}
                 value={formik.values.phone_num}
-                />
-                <p style={{ color: "red" }}> {formik.errors.phone_num}</p>
-
-                {/* ADDRESS FIELD */}
-                <label htmlFor="address">Address</label>
-                <br />
-                <input
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+              <p className="text-red-500 text-xs mt-1">{formik.errors.phone_num}</p>
+            </div>
+      
+            {/* ADDRESS FIELD */}
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
+              <input
                 id="address"
                 name="address"
-                placeholder='123 Main St.'
+                type="text"
+                placeholder="123 Main St."
                 onChange={formik.handleChange}
                 value={formik.values.address}
-                />
-                <p style={{ color: "red" }}> {formik.errors.address}</p>
-
-                <button type="submit">Submit</button>
-
-                {/* <fieldset>
-                        <legend>Address</legend>
-
-                        <div>
-                        <label htmlFor="address.street">Street:</label>
-                        <input
-                            type="text"
-                            id="address.street"
-                            name="address.street"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.address.street}
-                        />
-                        {formik.touched.address?.street && formik.errors.address?.street ? <div>{formik.errors.address.street}</div> : null}
-                        </div>
-
-                        <div>
-                        <label htmlFor="address.city">City:</label>
-                        <input
-                            type="text"
-                            id="address.city"
-                            name="address.city"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.address.city}
-                        />
-                        {formik.touched.address?.city && formik.errors.address?.city ? <div>{formik.errors.address.city}</div> : null}
-                        </div>
-
-                        <div>
-                        <label htmlFor="address.state">State:</label>
-                        <input
-                            type="text"
-                            id="address.state"
-                            name="address.state"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.address.state}
-                        />
-                        {formik.touched.address?.state && formik.errors.address?.state ? <div>{formik.errors.address.state}</div> : null}
-                        </div>
-
-                        <div>
-                        <label htmlFor="address.postalCode">Postal Code:</label>
-                        <input
-                            type="text"
-                            id="address.postalCode"
-                            name="address.postalCode"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.address.postalCode}
-                        />
-                        {formik.touched.address?.postalCode && formik.errors.address?.postalCode ? <div>{formik.errors.address.postalCode}</div> : null}
-                        </div>
-
-                        <div>
-                        <label htmlFor="address.country">Country:</label>
-                        <input
-                            type="text"
-                            id="address.country"
-                            name="address.country"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.address.country}
-                        />
-                        {formik.touched.address?.country && formik.errors.address?.country ? <div>{formik.errors.address.country}</div> : null}
-                        </div>
-                    </fieldset>
-
-                    <button type="submit">Submit</button> */}
-
-            </form>
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+              <p className="text-red-500 text-xs mt-1">{formik.errors.address}</p>
+            </div>
+      
+            <div className="flex justify-center">
+              <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Submit
+              </button>
+            </div>
+          </form>
         </div>
-        <div>
-            {displaySuppliers}
+        <br></br>
+        <br></br>
+        {/* SUPPLIER LIST */}
+        <div className="max-w-xl mx-auto">
+          <ul role="list" className="divide-y divide-gray-100">
+            {suppliers.map((supplier) => (
+              <li key={supplier.id} className="flex justify-between gap-x-3 py-1 max-w-full">
+                <div className="flex min-w-0 gap-x-4">
+                  <div className="min-w-0 flex-auto">
+                    <p className="text-sm font-semibold leading-6 text-gray-900">{supplier.name}</p>
+                    <p className="mt-1 truncate text-xs leading-5 text-gray-500">{supplier.address}</p>
+                  </div>
+                </div>
+                <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                  <p className="text-sm leading-6 text-gray-900">{supplier.email}</p>
+                  <div className="mt-1 flex items-center gap-x-1.5">
+                    <p className="text-xs leading-5 text-gray-500">{supplier.phone_num}</p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
-    </>
+      </>
   )
 }
 
