@@ -26,7 +26,7 @@ Restaurant Inventory Tracker is a full-stack application developed for restauran
 
 ## Tech Stack
 
-- **Frontend**: React (with React Router for navigation)
+- **Frontend**: React (with React Router for navigation), Formik and Yup (for form handling and validation)
 - **Backend**: Flask (Flask-RESTful for API endpoints)
 - **Database**: SQLAlchemy (with Flask-SQLAlchemy as the ORM)
 
@@ -47,11 +47,22 @@ Restaurant Inventory Tracker is a full-stack application developed for restauran
 - **Supplier** ↔️ **RestockOrders**: One-to-Many relationship where a supplier can have multiple restock orders.
 - **Item** ↔️ **Supplier**: Many-to-Many relationship managed through the `RestockOrders` model as the association table.
 
+## Database Integrity
+
+To ensure data integrity and prevent invalid entries:
+- **Constraints** and **Validations** were added to protect the database.
+- Field-specific constraints were applied, such as unique values where needed and limitations on nullability.
+- Form validation with Yup ensures that data integrity is checked both on the frontend and backend.
+
 ## Usage
 
 - **Add Inventory Items**: Add new items to the inventory and specify stock quantity and restock thresholds.
 - **Manage Suppliers**: Add new suppliers or update supplier details as necessary.
 - **Create Restock Orders**: When an item’s stock falls below or at its restock threshold, create a new restock order with a supplier. Track and update the status of each order as it progresses.
+
+**Form Handling**
+
+Formik is used to handle form submission, while Yup is used for schema-based validation, ensuring consistent and reliable input management for user actions across the app.
 
 ## Suggested Future Improvements
 
