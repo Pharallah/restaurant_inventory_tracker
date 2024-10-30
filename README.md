@@ -7,12 +7,11 @@ Restaurant Inventory Tracker is a full-stack application developed for restauran
 - [Tech Stack](#tech-stack)
 - [Models](#models)
 - [Relationships](#relationships)
-- [Installation](#installation)
 - [Usage](#usage)
 - [Project Structure](#project-structure)
-- [Future Improvements](#future-improvements)
+- [Suggested Future Improvements](#suggested-future-improvements)
 - [Contributing](#contributing)
-- [License](#license)
+
 
 ---
 
