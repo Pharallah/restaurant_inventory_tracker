@@ -32,7 +32,7 @@ function NavBar() {
                         <div className="flex items-center">
                             <img
                                 alt="Your Company"
-                                src="https://scontent-ord5-2.xx.fbcdn.net/v/t39.30808-6/340818725_256126496851858_8530473210603699355_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=EtBanWY20m8Q7kNvgEy7QFG&_nc_zt=23&_nc_ht=scontent-ord5-2.xx&_nc_gid=A4m3QEW5LmOionmTkFz3kja&oh=00_AYD3Evidvw0nYpmX2ndAyT-y33raxZ1ZPrvKyMX5mVG0VQ&oe=671F41BE"
+                                src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-1/340818725_256126496851858_8530473210603699355_n.jpg?stp=dst-jpg_s480x480&_nc_cat=100&ccb=1-7&_nc_sid=f4b9fd&_nc_ohc=Q8xwtThOOIIQ7kNvgFkBT0m&_nc_zt=24&_nc_ht=scontent-lga3-2.xx&_nc_gid=AfJEPODixf2Tf9o91JhkRTS&oh=00_AYBZdQYjJnuvhPNJS-ujYR0UXVLbIWL0lyNxpnMTafSruQ&oe=6727A8BC"
                                 className="h-20 w-auto"
                             />
                         </div>

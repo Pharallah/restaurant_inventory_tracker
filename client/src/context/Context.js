@@ -34,7 +34,6 @@ function ContextProvider({ children }) {
 
     function onItemAddition(item) {
         console.log("onItemAddition TRIGGERED")
-        console.log(item)
         const updatedItems = [
           ...items,
           item

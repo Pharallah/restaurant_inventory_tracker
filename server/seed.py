@@ -25,39 +25,64 @@ def random_past_date():
 
 def create_items():
     inventory_items = []
-    meat_names = [
-    'Chicken Breast', 'Ground Beef', 'Pork Ribs', 'Turkey Thighs', 'Pork Belly', 'Chicken Thighs', 'Ham', 'Bacon', 'Sausage'
-]
-    sample_size = len(meat_names)  
-    unique_choices = sample(meat_names, sample_size)
 
-    for item in unique_choices:
+    # Define category to item mapping
+    category_items = {
+        "Meat": ['Chicken Breast', 'Ground Beef', 'Pork Ribs', 'Turkey Thighs', 'Pork Belly'],
+        "Produce": ['Lettuce', 'Tomato', 'Spinach', 'Carrot', 'Broccoli'],
+        "Dairy": ['Milk', 'Cheese', 'Yogurt', 'Butter', 'Cream'],
+        "Beverage": ['Water', 'Soda', 'Juice', 'Tea', 'Coffee'],
+        "Spice": ['Salt', 'Pepper', 'Cinnamon', 'Paprika', 'Chili Powder'],
+        "Equipment": ['Knife', 'Cutting Board', 'Pan', 'Pot', 'Spatula']
+    }
+
+    for category, items in category_items.items():
+        # Ensure at least one item per category
+        item_name = rc(items)
         new_item = Item(
-                item_name=item,
-                category='Meat',
-                stock_quantity=randint(1, 50),
-                reorder_quantity=randint(1, 15)
-            )
+            item_name=item_name,
+            category=category,
+            stock_quantity=randint(1, 50),
+            reorder_quantity=randint(1, 15)
+        )
         inventory_items.append(new_item)
 
     return inventory_items
             
 def generate_company():
-            company_name = fake.company()
-            return company_name[:20]
+    company_name = fake.company()
+    return company_name[:20]
+
+companyList = [
+    {
+        "name": "Restaurant Depot",
+        "email": "info@restaurantdepot.com",
+        "phone": "216-525-0101",
+        "address": "6150 Halle Dr, Valley View, OH 44125"
+    },
+    {
+        "name": "Gordon Food Service",
+        "email": "contact@gfs.com",
+        "phone": "440-716-6093",
+        "address": "24005 Lorain Rd, North Olmsted, OH 44070"
+    },
+    {
+        "name": "Eat Local Ohio",
+        "email": "plopez@eatlocalohio.com",
+        "phone": "216-361-4625",
+        "address": "2699 E 51st St, Cleveland, OH 44115"
+    }
+]
 
 def create_suppliers():
     suppliers = []
-    for _ in range(3):
-        company_name = generate_company()
-        email_domain = ''.join(e for e in company_name if e.isalnum() or e == ' ').replace(' ', '-').lower()
-        email = f'info@{email_domain}.com'
-        
+
+    for company in companyList:
         supplier = Supplier(
-            name=company_name,
-            email=email,
-            phone_num=fake.numerify('###-###-####'),
-            address=fake.address()
+            name=company['name'],
+            email=company['email'],
+            phone_num=company['phone'],
+            address=company['address']
         )
         suppliers.append(supplier)
     

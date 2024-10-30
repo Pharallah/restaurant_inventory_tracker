@@ -15,7 +15,6 @@ const { onItemAddition } = useContext(Context)
 const supplierImages = {
     restaurantDepot: "https://www.restaurantdepot.com/images/default-source/default-album/logo.png?sfvrsn=17ca70b1_0",
     gordonFoodService: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPTIr8TePA5fIv2ksOOY6aeQO3TxG0bvtdFA&s",
-    giantEagle: "https://cdn.worldvectorlogo.com/logos/giant-eagle.svg",
     eatLocalOhio: "https://www.eatlocalohio.com/assets/images/shapes/elo-logo.png"
 }
 
@@ -84,18 +83,19 @@ const formik = useFormik({
     }
 })
 
-// DISPLAY SUPPLIERS
-const displaySuppliers = suppliers.map(supplier => 
-    <SupplierCard 
-        key={supplier.id}
-        id={supplier.id}
-        name={supplier.name}
-        email={supplier.email}
-        phone_num={supplier.phone_num}
-        address={supplier.address}
-    />
-    
-)
+    function getSupplierImageUrl(supplierName) {
+        switch (supplierName.toLowerCase()) {
+            case 'restaurant depot':
+                return supplierImages.restaurantDepot;
+            case 'gordon food service':
+                return supplierImages.gordonFoodService;
+            case 'eat local ohio':
+                return supplierImages.eatLocalOhio;
+            default:
+                return "https://t4.ftcdn.net/jpg/05/86/73/21/240_F_586732137_fm65Y6l2FSyD0MZF4eUTxq03fYfCuiQ8.jpg";
+        }
+    }
+
     return (
         <>
         {showItemForm && (
@@ -175,14 +175,22 @@ const displaySuppliers = suppliers.map(supplier =>
             </div>
           </form>
         </div>
+        
         <br></br>
         <br></br>
+        
         {/* SUPPLIER LIST */}
         <div className="max-w-xl mx-auto">
           <ul role="list" className="divide-y divide-gray-100">
             {suppliers.map((supplier) => (
               <li key={supplier.id} className="flex justify-between gap-x-3 py-1 max-w-full">
                 <div className="flex min-w-0 gap-x-4">
+                    {}
+                    <img 
+                    alt="" 
+                    src={getSupplierImageUrl(supplier.name)}
+                    className="h-12 w-12 flex-none rounded-full bg-gray-50" 
+                    />
                   <div className="min-w-0 flex-auto">
                     <p className="text-sm font-semibold leading-6 text-gray-900">{supplier.name}</p>
                     <p className="mt-1 truncate text-xs leading-5 text-gray-500">{supplier.address}</p>
