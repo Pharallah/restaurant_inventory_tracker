@@ -11,14 +11,13 @@ class Item(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     item_name= db.Column(db.String, nullable=False, unique=True)
-    # unique is not
     category = db.Column(db.String, nullable=False)
     stock_quantity = db.Column(db.Integer, nullable=False)
     reorder_quantity = db.Column(db.Integer, nullable=False)
 
     restock_orders = db.relationship('RestockOrder', back_populates='item', cascade='all, delete-orphan')
 
-    # serialize_rules = ('restock_orders.item',)
+    serialize_rules = ('restock_orders.item',)
 
     @validates('item_name')
     def validates_item_name(self, key, name):
@@ -72,7 +71,7 @@ class Supplier(db.Model, SerializerMixin):
 
     restock_orders = db.relationship('RestockOrder', back_populates='supplier', cascade='all, delete-orphan')
 
-    # serialize_rules = ('restock_orders.supplier',)
+    serialize_rules = ('restock_orders.supplier',)
 
     @validates('name')
     def validates_name(self, key, name):
@@ -127,7 +126,7 @@ class RestockOrder(db.Model, SerializerMixin):
     item = db.relationship('Item', back_populates='restock_orders')
     supplier = db.relationship('Supplier', back_populates='restock_orders')
 
-    serialize_rules = ('-item.restock_orders', '-supplier.restock_orders',)
+    serialize_rules = ('-item.restock_orders', '-supplier.restock_orders')
 
     @validates('item_id', 'supplier_id')
     def validates_foreign_keys(self, key, id):
