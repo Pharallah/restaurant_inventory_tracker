@@ -33,7 +33,6 @@ function ContextProvider({ children }) {
     }, [])
 
     function onItemAddition(item) {
-        console.log("onItemAddition TRIGGERED")
         const updatedItems = [
           ...items,
           item

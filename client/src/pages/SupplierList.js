@@ -1,7 +1,6 @@
 import React from 'react'
 import { useContext } from 'react'
 import { Context } from '../context/Context'
-import SupplierCard from '../components/SupplierCard'
 import * as yup from "yup";
 import { useFormik } from 'formik';
 import { useOutletContext } from "react-router-dom";

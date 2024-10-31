@@ -15,16 +15,10 @@ from models import Item, Supplier, RestockOrder
 
 CORS(app)
 
-# Views go here!
-
-@app.route('/')
-def index():
-    return '<h1>Project Server</h1>'
-
 class Items(Resource):
     def get(self):
         items = [item.to_dict(
-            # rules=('-restock_orders',)
+            rules=('-restock_orders',)
             ) for item in Item.query.all()]
 
         if items:
@@ -37,17 +31,18 @@ class Items(Resource):
         
     def post(self):
         json = request.get_json()
-        # print(json['itemName'])
-        # breakpoint()
+    
         try:
             new_item = Item(
             item_name=json['itemName'],
             category=json['category'],
             stock_quantity=json['stockQuantity'],
             reorder_quantity=json['reorderQuantity'],
-        )
+            )
+
             db.session.add(new_item)
             db.session.commit()
+
         except ValueError as e:
             return {'errors': str(e)}, 400
         
@@ -188,6 +183,7 @@ class SupplierById(Resource):
         return supplier.to_dict(rules=('-restock_orders',)), 200
             
 class RestockOrders(Resource):
+
     def get(self):
         restock_orders = [order.to_dict(rules=('-item', '-supplier',)) for order in RestockOrder.query.all()]
 
@@ -239,6 +235,16 @@ class RestockOrders(Resource):
                 return response
             except Exception as e:
                 return {'errors': 'Restock Order not found'}, 400
+            
+class RestockOrdersbyStatus(Resource):
+    def get(self):
+        pending_orders = [order.to_dict(rules=('-item', '-supplier')) for order in RestockOrder.query.filter(RestockOrder.order_status == 'Pending').all()]
+
+        response = make_response(
+            pending_orders, 200
+        )
+
+        return response
     
 class RestockOrderById(Resource):
 
@@ -293,6 +299,49 @@ class RestockOrderById(Resource):
         db.session.commit()
 
         return {}, 204
+    
+class ItemsbySupplier(Resource):
+    def get(self):
+        ordersById = RestockOrder.query.filter(RestockOrder.supplier_id == 2).all()
+
+        items = [order.item.to_dict(rules=('-restock_orders',)) for order in ordersById]
+
+        response = make_response(
+            items, 200
+        )
+
+        return response
+
+# Make a resource that takes in an order_status and returns the order by status
+
+class OrderByStatus(Resource):
+    def get(self, status):
+        titled_status = status.title()
+        orders = [order.to_dict(rules=('-item', '-supplier')) for order in RestockOrder.query.filter(RestockOrder.order_status == titled_status).all()]
+
+        response = make_response(
+            orders, 200
+        )
+
+        return response
+    
+class ItemByCategory(Resource):
+    def get(self, category):
+        titled_category = category.title()
+
+        items = [item.to_dict(rules=('-restock_orders',)) for item in Item.query.filter_by(category= titled_category).all()]
+
+        response = make_response(
+            items, 200
+        )
+
+        return response
+    
+class ItemByQuantity(Resource):
+    def get(self, quantity):
+        items = [item.to_dict(rules=('-restock_orders',)) for item in Item.query.filter(Item.stock_quantity < quantity).all()]
+
+        return items
 
 
 api.add_resource(Items, '/items')
@@ -300,6 +349,11 @@ api.add_resource(ItemById, '/items/<int:id>')
 api.add_resource(Suppliers, '/suppliers')
 api.add_resource(RestockOrders, '/restockorders')
 api.add_resource(RestockOrderById, '/restockorders/<int:id>')
+api.add_resource(RestockOrdersbyStatus, '/restockordersbystatus')
+api.add_resource(ItemsbySupplier, '/itembysupplier')
+api.add_resource(OrderByStatus, '/status/<string:status>')
+api.add_resource(ItemByCategory, '/itemcategory/<string:category>')
+api.add_resource(ItemByQuantity, '/itemquantity/<int:quantity>')
 
 
 

@@ -3,9 +3,8 @@ import Dashboard from "./pages/Dashboard";
 import SupplierList from "./pages/SupplierList";
 import ErrorPage from "./pages/ErrorPage";
 import RestockOrders from "./pages/RestockOrders";
-import SupplierCard from "./components/SupplierCard";
-import RestockOrderCard from "./components/RestockOrderCard";
 import { ContextProvider } from "./context/Context";
+
 
 const routes = [
     {
@@ -28,14 +27,6 @@ const routes = [
             {
                 path: "/suppliers",
                 element: <SupplierList/>,
-                children: [
-                    {
-                        path: "/suppliers/:id",
-                        element: <SupplierCard/>,
-                        // Consider adding a unique error page for this
-                        errorElement: <ErrorPage />
-                    }
-                ]
             }
         ]
     },
