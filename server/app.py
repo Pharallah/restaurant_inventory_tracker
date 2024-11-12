@@ -61,7 +61,7 @@ class Items(Resource):
         if item_dict:
             try:
                 response = make_response(
-                    item_dict, 200
+                    item_dict, 201
                 )
                 return response
             except Exception as e:
@@ -83,35 +83,23 @@ class ItemById(Resource):
         if not item:
             abort(404, "Item not found")
 
-        elif item:
-            json = request.get_json()
+        json = request.get_json()
+        required_fields = ['itemName', 'category', 'stockQuantity', 'reorderQuantity']
+        errors = [{'error': f'Must be a valid {field}'} for field in required_fields if not json.get(field)]
 
-            errors = []
-            if not json.get('itemName'):
-                errors.append({'error': 'Must be a valid item name'})
-            if not json.get('category'):
-                errors.append({'error': 'Must be a valid category'})
-            if not json.get('stockQuantity'):
-                errors.append({'error': 'Must be a valid stock quantity'})
-            if not json.get('reorderQuantity'):
-                errors.append({'error': 'Must be a valid reorder quantity'})
-            if errors:
-                return {'errors': errors}
-            
-            item.item_name = json['itemName']
-            item.category = json['category']
-            item.stock_quantity = json['stockQuantity']
-            item.reorder_quantity = json['reorderQuantity']
+        if errors:
+            return {'errors': errors}, 400
 
-            db.session.commit()
+        # Update fields - assuming these fields are always present after validation
+        item.item_name = json['itemName']
+        item.category = json['category']
+        item.stock_quantity = json['stockQuantity']
+        item.reorder_quantity = json['reorderQuantity']
 
-            item_dict = item.to_dict(rules=('-restock_orders',))
+        db.session.commit()
 
-            response = make_response(
-                item_dict, 202
-            )
-
-            return response
+        item_dict = item.to_dict(rules=('-restock_orders',))
+        return make_response(item_dict, 202)
     
     def delete(self, id):
         item = Item.query.filter(Item.id == id).first()
@@ -300,48 +288,14 @@ class RestockOrderById(Resource):
 
         return {}, 204
     
-class ItemsbySupplier(Resource):
-    def get(self):
-        ordersById = RestockOrder.query.filter(RestockOrder.supplier_id == 2).all()
-
-        items = [order.item.to_dict(rules=('-restock_orders',)) for order in ordersById]
-
-        response = make_response(
-            items, 200
-        )
-
-        return response
-
-# Make a resource that takes in an order_status and returns the order by status
-
-class OrderByStatus(Resource):
-    def get(self, status):
-        titled_status = status.title()
-        orders = [order.to_dict(rules=('-item', '-supplier')) for order in RestockOrder.query.filter(RestockOrder.order_status == titled_status).all()]
-
-        response = make_response(
-            orders, 200
-        )
-
-        return response
-    
-class ItemByCategory(Resource):
-    def get(self, category):
-        titled_category = category.title()
-
-        items = [item.to_dict(rules=('-restock_orders',)) for item in Item.query.filter_by(category= titled_category).all()]
-
-        response = make_response(
-            items, 200
-        )
-
-        return response
-    
-class ItemByQuantity(Resource):
+# Get all suppliers with a restock order with a quantity greater or equal to 1
+class SupplierByRestockQuantity(Resource):
     def get(self, quantity):
-        items = [item.to_dict(rules=('-restock_orders',)) for item in Item.query.filter(Item.stock_quantity < quantity).all()]
+        suppliers = db.session.query(Supplier).join(RestockOrder).filter(RestockOrder.order_quantity == quantity).all()
 
-        return items
+        suppliers_dict = [supplier.to_dict(rules=('-restock_orders',)) for supplier in suppliers]
+
+        return suppliers_dict, 200
 
 
 api.add_resource(Items, '/items')
@@ -350,12 +304,7 @@ api.add_resource(Suppliers, '/suppliers')
 api.add_resource(RestockOrders, '/restockorders')
 api.add_resource(RestockOrderById, '/restockorders/<int:id>')
 api.add_resource(RestockOrdersbyStatus, '/restockordersbystatus')
-api.add_resource(ItemsbySupplier, '/itembysupplier')
-api.add_resource(OrderByStatus, '/status/<string:status>')
-api.add_resource(ItemByCategory, '/itemcategory/<string:category>')
-api.add_resource(ItemByQuantity, '/itemquantity/<int:quantity>')
-
-
+api.add_resource(SupplierByRestockQuantity, '/supplierbyrestockquantity')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

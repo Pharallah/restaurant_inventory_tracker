@@ -17,7 +17,7 @@ class Item(db.Model, SerializerMixin):
 
     restock_orders = db.relationship('RestockOrder', back_populates='item', cascade='all, delete-orphan')
 
-    serialize_rules = ('restock_orders.item',)
+    serialize_rules = ('-restock_orders.item',)
 
     @validates('item_name')
     def validates_item_name(self, key, name):
@@ -71,7 +71,7 @@ class Supplier(db.Model, SerializerMixin):
 
     restock_orders = db.relationship('RestockOrder', back_populates='supplier', cascade='all, delete-orphan')
 
-    serialize_rules = ('restock_orders.supplier',)
+    serialize_rules = ('-restock_orders.supplier',)
 
     @validates('name')
     def validates_name(self, key, name):

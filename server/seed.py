@@ -24,8 +24,6 @@ def random_past_date():
     return random_date
 
 def create_items():
-    inventory_items = []
-
     # Define category to item mapping
     category_items = {
         "Meat": ['Chicken Breast', 'Ground Beef', 'Pork Ribs', 'Turkey Thighs', 'Pork Belly'],
@@ -35,7 +33,8 @@ def create_items():
         "Spice": ['Salt', 'Pepper', 'Cinnamon', 'Paprika', 'Chili Powder'],
         "Equipment": ['Knife', 'Cutting Board', 'Pan', 'Pot', 'Spatula']
     }
-
+    
+    inventory_items = []
     for category, items in category_items.items():
         # Ensure at least one item per category
         item_name = rc(items)
@@ -48,10 +47,7 @@ def create_items():
         inventory_items.append(new_item)
 
     return inventory_items
-            
-def generate_company():
-    company_name = fake.company()
-    return company_name[:20]
+
 
 companyList = [
     {
@@ -91,6 +87,7 @@ def create_suppliers():
 def create_orders(items, suppliers):
     orders = []
     status_list = ['Pending', 'Completed', 'Canceled']
+    
     for _ in range(10):
         order = RestockOrder(
             order_status=rc(status_list),
@@ -98,8 +95,8 @@ def create_orders(items, suppliers):
             order_date=random_past_date(),
             item_id=rc([item.id for item in items]),
             supplier_id=rc([supplier.id for supplier in suppliers])
-
         )
+
         orders.append(order)
 
     return orders
